@@ -3,7 +3,7 @@ var express = require('express');
 var http = require('http');
 var path = require('path');
 var socketIO = require('socket.io');
-
+var mysql=require('mysql');
 var app = express();
 var server = http.Server(app);
 var io = socketIO(server);
@@ -25,6 +25,48 @@ setInterval(function() {
   io.sockets.emit('message', 'hi!');
 }, 1000);
 
+var connection=mysql.createConnection(
+{
+	host:"localhost",user:"root",password:"1111",database:"PocketTank"
+});
+
+// connection.connect(function(err){
+// 	if (err) throw err;
+// 	console.log("Connection Completed.");
+	
+// });
+
+var password="";
+var userid="";
+
+function getLogin()
+{
+	console.log("GetLogin is working.");
+	connection.connect(function(err) {
+  	if (err) throw err;
+  		connection.query("SELECT * FROM Login", function (err, result, fields) {
+    if (err) throw err;
+    var str=JSON.stringify(result);
+    var json=JSON.parse(str);
+    console.log(json[0].password);
+  });
+});
+}
+
+function setLogin(userid,pswd)
+{
+	console.log("SetLogin is working.");
+	connection.connect(function(err) {
+  	if (err) throw err;
+
+  	var sql="INSERT INTO Login (id,password) VALUES ("+String(userid)+","+String(pswd)+")";
+  		console.log("Second");
+  		connection.query(sql, function (err, result) {
+    if (err) throw err;
+    console.log("Data Inserted.");
+  });
+});	
+}
 
 
 
@@ -32,6 +74,7 @@ io.on('connection', function(socket) {
   socket.on('bpress', function(data) {
     
  	socket.broadcast.emit('bpress2', data);
+ 	setLogin("Pratik","1234");
 }
 );
 
