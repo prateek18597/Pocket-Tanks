@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>
+		Pocket Tanks
+	</title>
+	
+	<script type="text/javascript" src="/static/easel.js"></script>
+	<script type="text/javascript" src="/static/tween.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<script type="text/javascript" src="/static/script.js"></script>
+	
+	<style type="text/css">
+		body
+		{
+			background: gray;
+		}
+		canvas
+		{
+			/*background:#87cefa;*/
+			margin-left: 150px;
+			margin-right: 150px;
+			margin-top: 50px;
+		}
+		#powerdiv
+		{
+			/*margin-left:800px;*/
+		}
+		#anglediv
+		{
+			/*margin-left: px;*/
+		}
+
+	</style>
+
+</head>
+<body onload="init()">
+	<canvas id="canvas" width="1000px" height="450px">
+		This is a canvas element.
+		
+	</canvas>
+	<div id="anglediv">
+	<p id="anglebar" align="center">
+		
+		<input type="range" id="angle" name="Angle" min="0" max="360" value="45">
+		<br>
+		Angle
+		<!-- <button id="attack" onclick="attack(1)">Attack</button> -->
+	</p>
+	<button id="attack" onclick="attack(1)">Attack Player 1</button>
+	<button id="attack" style="margin-right: : 100px" onclick="attack(2)">Attack Player 2</button>
+	</div>
+	<div id="powerdiv">
+	<p id="powerbar" align="center">
+		
+		<input type="range" id="power" name="Power" min="0" max="100" value="50">
+		<br>
+		Power Bar
+	</p>
+	
+	</div>
+	<!-- <button id="attack" sonclick="attack(1)">Attack</button> -->
+	
+
+</body>
+</html>
