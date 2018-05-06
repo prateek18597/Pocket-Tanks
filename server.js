@@ -14,6 +14,7 @@ app.use('/static', express.static(__dirname + '/static'));
 // Routing
 app.get('/', function(request, response) {
   response.sendFile(path.join(__dirname, 'index.html'));
+  getLogin();
 });
 
 // Starts the server.
@@ -36,8 +37,10 @@ var connection=mysql.createConnection(
 	
 // });
 
-var password="";
-var userid="";
+var password1="";
+var userid1="";
+// var password2="";
+// var userid2="";
 
 function getLogin()
 {
@@ -48,7 +51,8 @@ function getLogin()
     if (err) throw err;
     var str=JSON.stringify(result);
     var json=JSON.parse(str);
-    console.log(json[0].password);
+    userid1=json[0].id;
+    password1=json[0].password;
   });
 });
 }
@@ -74,7 +78,7 @@ io.on('connection', function(socket) {
   socket.on('bpress', function(data) {
     
  	socket.broadcast.emit('bpress2', data);
- 	setLogin("Pratik","1234");
+ 	
 }
 );
 
