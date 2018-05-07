@@ -4,7 +4,13 @@ var grap=new createjs.Graphics();
 var view=-1;
 var canvas;//=document.getElementById("canvas");
 var ctx;
-//		ctx.clearRect(0, 0, this.canvas.width+1, this.canvas.height+1);
+var terr=[];
+var xpeak;
+var ypeak;
+var tank1x=0;
+var tank1y=0;
+var tank2x=0;
+var tank2y=0;//		ctx.clearRect(0, 0, this.canvas.width+1, this.canvas.height+1);
 
 var socket = io();
 socket.on('message', function(data) {
@@ -18,17 +24,25 @@ function init()
 		// ctx= document.getElementById("canvas").getContext("2d");
 		// ctx.setTransform(1, 0, 0, 1, 0, 0);
 	modal = document.getElementById('id01');
+	socket.emit("getTerrain",1);
+	
+	// console.log(terr);
+
 }
 createjs.Ticker.setFPS(60);
 createjs.Ticker.addEventListener("tick",tick);
 
+socket.on('Terrain',function(data){
+		terr=data.terrain;
+		xpeak=data.x;
+		ypeak=data.y;
+		tank1x=data.t1x;
+		tank1y=data.t1y;
+		tank2x=data.t2x;
+		tank2y=data.t2y;
+		console.log(terr);
+	} );
 
-// When the user clicks anywhere outside of the modal, close it
-// window.onclick = function(event) {
-//     if (event.target == modal) {
-//         modal.style.display = "none";
-//     }
-// }
 function loginView()
 {
 	var text = new createjs.Text("Pocket Tanks", "120px Script", "white");
@@ -40,6 +54,8 @@ function loginView()
  	stage.update();
  	console.log("loginView");
 }
+
+
 
 function checkDatabase()
 {
@@ -114,105 +130,39 @@ function starter()
 createjs.MotionGuidePlugin.install();
 var xcoor=[];
 var ycoor=[];
-var xpeak;
-var ypeak;
-var peakindex;
-var tank1index=0;
-var tank2index=0;
-var tank1x=0;
-var tank1y=0;
-var tank2x=0;
-var tank2y=0;
+// var xpeak;
+// var ypeak;
+// var peakindex;
+// var tank1index=0;
+// var tank2index=0;
 
+var slope1=0;
 function tanks()
 {
+	console.log(tank1x+"T1x"+tank1y+"T1y"+tank2x+"T2x"+tank2y+"T2y");
 	var tgraph=new createjs.Graphics();
 	tgraph.beginStroke("red");
 	tgraph.beginFill("red");
-	// tgraph.drawRoundRect()
-	var xnum=Math.floor(Math.random()*xcoor.length);
-	if(xnum%2==0)
-	{
-		xnum=xnum/2;
-	}
-	else
-	{
-		xnum=(xnum+1)/2;
-
-	}
-	xnum=xnum-Math.floor(Math.random()*xnum)+100;
-	if(xnum<peakindex)
-	{
-	tank1index=xnum;
-	var xpos=xcoor[xnum];
-	var ypos=ycoor[xnum];
-	tank1x=xpos-15;
-	tank1y=ypos-15;
-	tgraph.drawRoundRect(tank1x,tank1y,25,15,5);
+	tgraph.drawRoundRect(tank1x,tank1y-15,25,15,5);
 	var tank=new createjs.Shape(tgraph);
-	// tank.x=
+	// tank.regX=tank1x+12.5;
+	// tank.regY=tank1y+7.5;
+	slope1=(terr[tank1x+10]-terr[tank1x-10])/20.0;
+	slope1=Math.floor(Math.atan(slope1)*180/3.14);
+	// tank.rotation=slope1;
 	stage.addChild(tank);
-	
-	}
-	else
-	{
-		xnum=2*peakindex-xnum;
-		tank1index=xnum;
-		var xpos=xcoor[xnum];
-	var ypos=ycoor[xnum];
-	tank1x=xpos-15;
-	tank1y=ypos-15;
-	tgraph.drawRoundRect(xpos-15,ypos-15,25,15,5);
-	var tank=new createjs.Shape(tgraph);
-	// tank.x=
+	tgraph=new createjs.Graphics();
+	tgraph.beginStroke("red");
+	tgraph.beginFill("red");
+	tgraph.drawRoundRect(tank2x,tank2y-15,25,15,5);
+	tank=new createjs.Shape(tgraph);
+	slope1=(terr[tank2x+10]-terr[tank2x-10])/20.0;
+	slope1=Math.floor(Math.atan(slope1)*180/3.14);
+	// tank.rotation=slope1;
+	// tank.rotation(Math.atan(slope1));
 	stage.addChild(tank);
-	}
-
-	tgraph.endFill();
-	tgraph.beginFill("gray");
+	stage.update();
 	
-	xnum=Math.floor(Math.random()*xcoor.length);
-	
-	if(xnum%2==0)
-	{
-		xnum=xnum/2;
-	}
-	else
-	{
-		xnum=(xnum+1)/2;
-
-	}
-	xnum=peakindex+xnum-Math.floor(Math.random()*xnum)+20;
-	if(xnum>peakindex)
-	{
-		tank2index=xnum;
-		var xpos=xcoor[xnum];
-		if(xpos>1000)
-		{
-			xpos-=xpos/6;
-		}
-	var ypos=ycoor[xnum];
-	tank2x=xpos-15;
-	tank2y=ypos-15;
-	tgraph.drawRoundRect(xpos-15,ypos-15,25,15,5);
-	var tank=new createjs.Shape(tgraph);
-	// tank.x=
-	stage.addChild(tank);
-	
-	}
-	else
-	{
-		xnum=2*peakindex-xnum;
-		tank2index=xnum;
-		var xpos=xcoor[xnum];
-	var ypos=ycoor[xnum];
-	tank2x=xpos-15;
-	tank2y=ypos-15;
-	tgraph.drawRoundRect(xpos-15,ypos-15,25,15,5);
-	var tank=new createjs.Shape(tgraph);
-	// tank.x=
-	stage.addChild(tank);
-	}
 	
 }
 
@@ -350,104 +300,28 @@ function attack(i)
 
 function terrain()
 {
-	// ctx.clearRect(0, 0, this.canvas.width+1, this.canvas.height+1);
-	document.getElementById("canvas").style.background="#87cefa";
+			document.getElementById("canvas").style.background="#87cefa";
 			grap.clear();
 			stage.clear();
 			stage.update();
 			grap=new createjs.Graphics();
 			var shape;
-			
-			grap.beginStroke("black");
-			grap.setStrokeStyle(5);
 			grap.moveTo(0,500);
-			// graphics.beginFill("green");
-			grap.beginLinearGradientFill(["#004d1a","#006622","#00802b","#009933","#00b33c","#33ff77"], [0, 1,0,0,0,0], 0, 620, 0, 50);
-			// shape=new createjs.Shape();
-			var ranX=Math.random()*(400)+300;
-			var y=400;
-			var y0=y;
-			xcoor.push(-5);
-			ycoor.push(400);
-			for(var i=-5;i<=ranX;i+=1.5)
+			grap.beginLinearGradientFill(["#004d1a","#33ff77"], [0, 1], 0, 620, 0, 50);
+			 
+			for(var i=0;i<1000;i+=2)
 			{
-				var r=Math.random()*4;
-				var j=(r)%2;
-				if(ranX-i<200 && j>1)
-					r+=3;
-				// if(y-r<150 || y-r >500)
-				// {
-				// 	r=0;
-				// }
-				if(j>1)
-				{
-					if(y-r>50){
-					grap.quadraticCurveTo(i-1,y0,i,y-r,10);
-					y=y-r;
-					xcoor.push(i);
-					ycoor.push(y);
-					}
-				}
-				else{
-					// {	
-					if(y+r<400)
-					{	grap.quadraticCurveTo(i-1,y0,i,y+r,10);
-						y=y+r;
-						xcoor.push(i);
-					ycoor.push(y);
-					}
-					// else
-					// 	graphics.lineTo(i,y);	
-				}
-				y0=y;
-				peakindex=xcoor.length;
-				xpeak=i;
-				ypeak=y;
-				// y=y-r;
+				grap.quadraticCurveTo(i,terr[i],i+2,terr[i+2]);
 			}
-			for(var i=ranX+1;i<=1000;i+=1.5)
-			{
-				var r=Math.random()*4;
-				var j=(r)%2;
-				// if(y-r<150 || y-r >500)
-				// {
-				// 	r=0;
-				// }
-				if(i-ranX<200 && j>1)
-					r+=3;
-
-				if(j>1)
-				{
-					if(y+r<400){
-					grap.quadraticCurveTo(i-1,y0,i,y+r,10);
-					y=y+r;
-					xcoor.push(i);
-					ycoor.push(y);
-				}
-				}
-				else{
-					// {	
-					// if(i%3==0)
-					if(y-r>50){
-						grap.quadraticCurveTo(i-1,y0,i,y-r,10);
-						y=y-r;
-						xcoor.push(i);
-					ycoor.push(y);
-					}
-					// }
-					// else
-					// 	graphics.lineTo(i,y);	
-				}
-				y0=y;
-				// y=y-r;
-			}
-			grap.quadraticCurveTo(1000,y0,1400,y0).quadraticCurveTo(1400,y0,1400,650).quadraticCurveTo(1400,450,0,650).quadraticCurveTo(0,650,0,400);
+			grap.quadraticCurveTo(1000,terr[999],1000,500).quadraticCurveTo(1000,500,0,500);//.quadraticCurveTo(1400,450,0,650).quadraticCurveTo(0,650,0,400);
+			console.log(terr[800]);
 			shape=new createjs.Shape(grap);
 			stage.addChild(shape);
-			tanks();
+			
 			// attack(1);
 			backButton();
 			stage.update();	
+			tanks();
 			// stage.update();
 
 }

@@ -43,67 +43,115 @@ var terr=[];//It contains Location of Terrain coordinates(X coordinate is index 
 var xpeak=0;//It contains x coordinate of peak;
 var ypeak=400;//It contains y coordinate of peak;
 // var password2="";
+var tank1x,tank1y,tank2x,tank2y;
 // var userid2="";
 
 function createTerrain()
 {
 	var ranX=Math.random()*400+300;
-	terr.push(400);
-	var y0=400;
+	terr.push(425);
+	var y0=425;
+	var y=425;
 	// var xpeak=0;
 	// var ypeak=400;
 	for(var i=1;i<=ranX;i+=1)
 	{
-		var r=Math.random()*8/3;
-		var y=400;
+		var r=Math.random()*3.8;
+		
 		var j=r%2;
 
 		if(ranX-i<200 && j>1)
-			r+=3;
+			r+=2.4;
+		// if(i%2==0){
 		if(j>1)
 		{
-			if(y-r>50)
+			if(y-r>100)
 			{
 				y=y-r;
+				terr.push(y);
+			}
+			else
+			{
+				// y=51;
 				terr.push(y);
 			}	
 		}
 		else
 		{
-			if(y+r<400)
+			if(y+r<425)
 			{
 				y=y+r;
 				terr.push(y);
 			}
+			else
+			{
+				// y=399;
+				terr.push(y);
+			}
 		}
+		// }
+		// else
+		// {
+		// 	terr.push(-1);
+		// }
+		y0=y;
 		xpeak=i;
 		ypeak=y;
 	}
 	for(var i=ranX+1;i<=1000;i+=1)
 	{
-		var r=Math.random()*8/3;
-		var y=400;
+		var r=Math.random()*2;
+		// var y=400;
 		var j=r%2;
-
+		// if(y-r<150 || y-r>500)
+		// {
+		// 	r=0;
+		// }
 		if(i-ranX<200 && j>1)
-			r+=3;
+			r+=1.2;
+		// if(i%2==0){
 		if(j>1)
 		{
-			if(y+r<400)
+			if(y+r<425)
 			{
 				y=y+r;
+				terr.push(y);
+			}
+			else
+			{
+				// y=400;
 				terr.push(y);
 			}	
 		}
 		else
 		{
-			if(y-r>50)
+			if(y-r>100)
 			{
 				y=y-r;
 				terr.push(y);
 			}
+			else
+			{
+				// y=51;
+				terr.push(y);
+			}
+
+		// }
 		}
+		// else
+		// {
+		// 	terr.push(-1);
+		// }
+		y0=y;
 	}
+
+	tank1x=Math.floor(Math.random()*200)+200;
+	tank1y=terr[tank1x];
+	tank2x=1000-Math.floor(Math.random()*400);
+	tank2y=terr[tank2x];
+	// console.log();
+	var tvalues={terrain:terr,x:xpeak,y:ypeak,t1x:tank1x,t1y:tank1y,t2x:tank2x,t2y:tank2y};
+	// socket.emit("Terrain",tvalues);
 }
 
 createTerrain();
@@ -185,6 +233,18 @@ io.on('connection', function(socket) {
 	socket.emit('loginResponse', {result:true});
 	else
 	socket.emit('loginResponse', {result:false});
+		
+	// console.log(data);	
+}
+);
+  socket.on('getTerrain', function(data) {
+    
+ 	// socket.broadcast.emit('bpress2', data);
+	// checkLogin(data.username,data.password); 
+	// if(loginResult==true)
+	socket.emit('Terrain', {terrain:terr,x:xpeak,y:ypeak,t1x:tank1x,t1y:tank1y,t2x:tank2x,t2y:tank2y});
+	// else
+	// socket.emit('loginResponse', {result:false});
 		
 	// console.log(data);	
 }
