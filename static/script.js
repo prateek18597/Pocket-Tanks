@@ -1,7 +1,7 @@
 var stage;
 
 var grap=new createjs.Graphics();
-var view=0;
+var view=-1;
 var canvas;//=document.getElementById("canvas");
 var ctx;
 //		ctx.clearRect(0, 0, this.canvas.width+1, this.canvas.height+1);
@@ -10,17 +10,44 @@ var socket = io();
 socket.on('message', function(data) {
   console.log(data,socket.id);
 });
-
+var modal;
 
 function init()
 {
 	stage=new createjs.Stage("canvas");
 		// ctx= document.getElementById("canvas").getContext("2d");
 		// ctx.setTransform(1, 0, 0, 1, 0, 0);
-	
+	modal = document.getElementById('id01');
 }
 createjs.Ticker.setFPS(60);
 createjs.Ticker.addEventListener("tick",tick);
+
+
+// When the user clicks anywhere outside of the modal, close it
+// window.onclick = function(event) {
+//     if (event.target == modal) {
+//         modal.style.display = "none";
+//     }
+// }
+function loginView()
+{
+	var text = new createjs.Text("Pocket Tanks", "120px Script", "white");
+	// document.getElementById("canvas").style.background="white";
+ 	text.x=(stage.canvas.width-640)/2;
+ 	text.y=250;
+ 	text.textBaseline = "alphabetic";
+ 	stage.addChild(text);
+ 	stage.update();
+ 	console.log("loginView");
+}
+
+function checkDatabase()
+{
+	var id=document.getElementById("username").value;
+	var pswd=document.getElementById("password").value;
+	var up={username:id,password:pswd};
+	socket.emit('login',up);
+}
 
 function starter()
 {
@@ -198,6 +225,7 @@ function backButton()
 	btn.addEventListener('click', function (e) {
 	console.log(e.target + ' was double clicked!');
 	view=0;
+	tank2x=tank1y=tank1x=tank2y=0;
 	// grap.clear();
 
 	// stage.clear();
@@ -223,6 +251,27 @@ var angle=0;
 
 
 socket.on('bpress2',function(data){attack(1);} );
+
+socket.on('loginResponse',function(data){
+	console.log(data);
+	if(data.result)
+	{
+		// console.log("")
+		view=0;
+		console.log("Hello");
+		modal.style.display="none";
+		
+		
+	}
+	else
+	{
+		alert("Wrong Credentials Found. Try Again.");
+		document.getElementById("username").value="";
+		document.getElementById("password").value="";
+	}
+
+});
+
 
 var first = 1;
 function attack(i)
@@ -414,17 +463,26 @@ function tick()
 	if(view==0)
 	{
 		stage.removeAllChildren();
-		view =-1;
+		view =-2;
 		starter();
 	}
 	else
 	{
 		if(view==1)
 		{
-			view=-1;
+			view=-2;
 			stage.removeAllChildren();
 			stage.update();
 			terrain();
+		}
+		else
+		{
+			if(view==-1)
+			{
+				loginView();
+				stage.update();
+				view=-2;
+			}
 		}
 	}
 	// stage.removeChild(ball);

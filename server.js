@@ -22,7 +22,7 @@ server.listen(5000, function() {
   console.log('Starting server on port 5000');
 });
 
-setInterval(function() {
+setInterval(function() {	
   io.sockets.emit('message', 'hi!');
 }, 1000);
 
@@ -112,9 +112,9 @@ function getLogin()
 {
 	console.log("GetLogin is working.");
 	connection.connect(function(err) {
-  	if (err) throw err;
+  	// if (err) throw err;
   		connection.query("SELECT * FROM Login", function (err, result, fields) {
-    if (err) throw err;
+    // if (err) throw err;
     var str=JSON.stringify(result);
     var json=JSON.parse(str);
     userid1=json[0].id;
@@ -123,16 +123,37 @@ function getLogin()
 });
 }
 
-// connection.connect(function(err) {
-//   	if (err) throw err;
-
-//   	var sql="INSERT INTO Login (id,password) VALUES ('Hello','Bye')";
-//   		console.log("Second");
-//   		connection.query(sql, function (err, result) {
-//     if (err) throw err;
-//     console.log("Data Inserted.");
-//   });
-// });	
+var loginResult;
+function checkLogin(userid,password)
+{
+	console.log("GetLogin is working.");
+	connection.connect(function(err) {
+  	// if (err) throw err;
+  		connection.query("SELECT * FROM Login where id= '"+userid+"'", function (err, result, fields) {
+    // if (err) throw err;
+    var str=JSON.stringify(result);
+    var json=JSON.parse(str);
+    if(result.length==1){
+    if (password==json[0].password)
+    {
+    	loginResult=true;
+    	console.log("Found a match");
+    	// socket.broadcast.emit('loginResponse', true);
+    }
+    else
+    {
+    	loginResult=false;
+    	console.log("No match found");
+    	// socket.broadcast.emit('loginResponse', false);
+	}
+	}
+	else
+	{
+		loginResult=false;
+	}
+  });
+});
+}
 
 function setLogin(userid,pswd)
 {
@@ -156,7 +177,18 @@ io.on('connection', function(socket) {
 	// setLogin("P","P"); 	
 }
 );
-
+  socket.on('login', function(data) {
+    
+ 	// socket.broadcast.emit('bpress2', data);
+	checkLogin(data.username,data.password); 
+	if(loginResult==true)
+	socket.emit('loginResponse', {result:true});
+	else
+	socket.emit('loginResponse', {result:false});
+		
+	// console.log(data);	
+}
+);
 });
 
 
