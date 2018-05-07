@@ -6,7 +6,14 @@ var canvas;//=document.getElementById("canvas");
 var ctx;
 //		ctx.clearRect(0, 0, this.canvas.width+1, this.canvas.height+1);
 
+
+var first = 1;
+
+
+
+
 var socket = io();
+
 socket.on('message', function(data) {
   console.log(data,socket.id);
 });
@@ -97,6 +104,10 @@ var tank1y=0;
 var tank2x=0;
 var tank2y=0;
 
+
+
+
+
 function tanks()
 {
 	var tgraph=new createjs.Graphics();
@@ -186,6 +197,13 @@ function tanks()
 	// tank.x=
 	stage.addChild(tank);
 	}
+
+
+	var ball = new createjs.Shape();
+		ball.graphics.beginFill("black");
+		ball.graphics.drawCircle(100,100,5);
+		stage.addChild(ball);
+		stage.update();	
 	
 }
 
@@ -224,7 +242,10 @@ var angle=0;
 
 socket.on('bpress2',function(data){attack(1);} );
 
-var first = 1;
+
+
+		
+
 function attack(i)
 {	
 	if(first ==1)
@@ -238,30 +259,36 @@ function attack(i)
 		angle=document.getElementById("angle").value;
 		console.log(power);
 		console.log("Angle is "+angle);
-		var ball = new createjs.Shape();
-		ball.graphics.beginFill("black");
-		ball.graphics.drawCircle(tank1x,tank1y,5);
-		// ball.x=tank1x;
-		// ball.y=tank1y;
-		console.log("Attacked");
-		var time=Math.abs(2*power*Math.sin(3.14*angle/180)/10);
-		var height=power*power*Math.sin(3.14*angle/180)*Math.sin(3.14*angle/180)/(20);
-		var range=power*power*Math.sin(3.14*angle/180)/10;
-		console.log(height);
-		console.log(range);
+		
+		var cx=0.01,cy=0.01;
+		var t=0;
+		var xpos = tank1x,ypos = tank1y;
+
+		
+	    
+		
+		while(xpos>=tank1x && xpos<=tank1x+100)
+		{
+			xpos = tank1x +cx*t;
+			ball.x = xpos;
+
+			console.log("moving");
+			t = t + 1 ;
+		}	
+
+		setInterval
+		//sleep(1000);
+		//stage.removeChild(ball);
+
+		// ball.x = xpos + 10;
+		// ball.y = ypos - 10;
+
+		    
 		
 
-		createjs.Tween.get(ball).to({guide:{ path:[0,0, range/2,-height, range,0] }},time*100);
-		// createjs.Tween.get(ball).to({guide:{ path:[0,0,(tank2x-tank1x)/2,-200,tank2x-tank1x,tank2y-tank1y] }},7000);
-			// graphics.moveTo(0,0).curveTo(0,200,200,200).curveTo(200,0,0,0);
-		// createjs.Tween.get(ball).to({x:(Math.abs(tank1x)),y:Math.abs(tank2y)}, 2000, createjs.Ease.quadIn);
-
-		stage.addChild(ball);
-		// for(var i=tank1x;i<tank2index;i++)
-		// {
+		
+		
 			
-		// }
-		stage.update();	
 	}
 
 	else
@@ -408,6 +435,7 @@ function mainmenu()
 
 }
 
+
 function tick()
 {
 
@@ -416,6 +444,8 @@ function tick()
 		stage.removeAllChildren();
 		view =-1;
 		starter();
+		// tank1x = 0;
+		// t=0;
 	}
 	else
 	{
@@ -426,6 +456,12 @@ function tick()
 			stage.update();
 			terrain();
 		}
+
+		// xpos = tank1x +1*t;
+		// ball.x = xpos;
+		// t = t + 0.1;
+
+		//console.log(xpos);
 	}
 	// stage.removeChild(ball);
 	stage.update();			

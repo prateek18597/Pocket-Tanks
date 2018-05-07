@@ -28,33 +28,32 @@ setInterval(function() {
 
 var connection=mysql.createConnection(
 {
-	host:"localhost",user:"root",password:"1111",database:"PocketTank"
+	host:"localhost",user:"root",password:"8p16ff0015",database:"PocketTank"
 });
 
-// connection.connect(function(err){
-// 	if (err) throw err;
-// 	console.log("Connection Completed.");
-	
-// });
 
 var password1="";
 var userid1="";
-// var password2="";
-// var userid2="";
 
 function getLogin()
 {
 	console.log("GetLogin is working.");
+	
 	connection.connect(function(err) {
-  	if (err) throw err;
+  	// if (err) throw err;
   		connection.query("SELECT * FROM Login", function (err, result, fields) {
-    if (err) throw err;
+    
+    // if (err) throw err;
     var str=JSON.stringify(result);
     var json=JSON.parse(str);
     userid1=json[0].id;
     password1=json[0].password;
+    console.log(userid1);
+
   });
+
 });
+
 }
 
 function setLogin(userid,pswd)
@@ -68,9 +67,11 @@ function setLogin(userid,pswd)
   		connection.query(sql, function (err, result) {
     if (err) throw err;
     console.log("Data Inserted.");
+  
   });
 });	
 }
+
 
 
 
@@ -78,9 +79,14 @@ io.on('connection', function(socket) {
   socket.on('bpress', function(data) {
     
  	socket.broadcast.emit('bpress2', data);
- 	
+ 	getLogin();
 }
 );
+
+socket.on('login',function(data){
+
+
+});
 
 });
 
