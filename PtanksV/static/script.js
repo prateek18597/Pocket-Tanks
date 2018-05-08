@@ -164,33 +164,23 @@ var attackC=[];
 var slope1=0;
 function tanks()
 {
-	// console.log(tank1x+"T1x"+tank1y+"T1y"+tank2x+"T2x"+tank2y+"T2y");
-	var tgraph=new createjs.Graphics();
-	tgraph.beginStroke("red");
-	tgraph.beginFill("red");
-	tgraph.drawRoundRect(tank1x-10,tank1y-25,25,15,5);
-	var tank=new createjs.Shape(tgraph);
-	// tank.regX=tank1x+12.5;
-	// tank.regY=tank1y+7.5;
-	slope1=(terr[tank1x+10]-terr[tank1x-10])/20.0;
-	slope1=Math.floor(Math.atan(slope1)*180/3.14);
-	// tank.rotation=slope1;
-	stage.addChild(tank);
-	tgraph=new createjs.Graphics();
-	tgraph.beginStroke("red");
-	tgraph.beginFill("red");
-	tgraph.drawRoundRect(tank2x,tank2y-15,25,15,5);
-	tank=new createjs.Shape(tgraph);
-	slope1=(terr[tank2x+10]-terr[tank2x-10])/20.0;
-	slope1=Math.floor(Math.atan(slope1)*180/3.14);
-	// tank.rotation=slope1;
-	// tank.rotation(Math.atan(slope1));
-	stage.addChild(tank);
+	console.log(tank1x+"T1x"+tank1y+"T1y"+tank2x+"T2x"+tank2y+"T2y");
+	img1=new createjs.Bitmap("/static/tank.png");
+	img1.x=tank1x-20;
+	img1.y=tank1y-20;
+	img1.scaleX=img1.scaleY=0.05;
+	img1.rotation=-20;
+	stage.addChild(img1);
+	img2=new createjs.Bitmap("/static/tank2.png");
+	img2.x=tank2x+5;
+	img2.y=tank2y-20;
+	img2.scaleX=img2.scaleY=0.05;
+	img2.rotation=20;
+	stage.addChild(img2);
 	stage.update();
 	
 	
 }
-
 function backButton()
 {
 	var btn=new createjs.Shape();
