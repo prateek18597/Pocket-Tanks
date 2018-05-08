@@ -216,20 +216,19 @@ function attack(tx,power,angle)
 {
 	attackC=[];
 	var ty=0;
-	// power/=10;
-	for(var i=tx;i<1000;i++)
-	{
-		var p=i-tx;
-		ty=power*Math.sin(angle*3.14/180)*p-5*p*p;
-		// console.log()
-		if(tank1y-ty-25>=terr[i])
-		{
-			console.log("Break.");
-			break;
+	var txx=0;
+	var p;// power/=10;
+	var t=0;
+	
+		while( txx<=1000 && txx>=0){
+		
+		ty=1*Math.sin(angle*3.14/180)*t-5*t*t;
+		txx=Math.floor(1*Math.cos(angle*3.14/180)*t);
+		attackC.push(txx);
+		attackC.push(-1*ty);
+		t=t+0.1
 		}
-		attackC.push(terr[i]-ty);
-		// console.log(ty);
-	}
+	
 	for(var i=0;i<attackC.length;i+=1)
 	{
 		console.log(i+tx+" "+attackC[i]);
@@ -265,10 +264,11 @@ io.on('connection', function(socket) {
 
   socket.on('bpress', function(data) {
     
+    console.log('INside bpress');
     attack(tank1x-10,data.p,data.ang);
-    console.log(attackC);
- 	setTimeout(function(){socket.emit('attackResponse', attackC);},1000);
-	
+    console.log(attackC.length);
+ 	setTimeout(function(){socket.emit('attackR', {a:attackC});},1000);
+	console.log("Hey");
  	// socket.broadcast.emit('bpress2', data);
 }
 );
@@ -281,8 +281,8 @@ socket.on('login', function(data) {
 	
 	console.log(data.username,data.password);
 	
-	console.log('login result is',loginResult)
-	setTimeout(function(){socket.emit('loginResponse', loginResult)},1000 );
+	console.log('login result is',loginResult);
+	setTimeout(function(){socket.emit('loginResponse', loginResult);},1000 );
 	
 		
 		
@@ -293,7 +293,7 @@ socket.on('login', function(data) {
  	// socket.broadcast.emit('bpress2', data);
 	// checkLogin(data.username,data.password); 
 	// if(loginResult==true)
-	socket.emit('Terrain', {terrain:terr,x:xpeak,y:ypeak,t1x:tank1x,t1y:tank1y,t2x:tank2x,t2y:tank2y});
+	setTimeout(function(){socket.emit('Terrain', {terrain:terr,x:xpeak,y:ypeak,t1x:tank1x,t1y:tank1y,t2x:tank2x,t2y:tank2y});},1000 );
 	// else
 	// socket.emit('loginResponse', {result:false});
 		

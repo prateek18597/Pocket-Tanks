@@ -1,8 +1,10 @@
 var stage;
 
 var grap=new createjs.Graphics();
+		var attackBall;
+
 var view=-1;
-var canvas;//=document.getElementById("canvas");
+var canvas;	//=document.getElementById("canvas");
 var ctx;
 var terr=[];
 var xpeak;
@@ -14,25 +16,27 @@ var tank2y=0;//		ctx.clearRect(0, 0, this.canvas.width+1, this.canvas.height+1);
 
 var socket = io();
 socket.on('message', function(data) {
-  console.log(data,socket.id);
+  // console.log(data,socket.id);
 });
 var modal;
 
 function init()
 {
+	console.log("Init function completed");
 	stage=new createjs.Stage("canvas");
 		// ctx= document.getElementById("canvas").getContext("2d");
 		// ctx.setTransform(1, 0, 0, 1, 0, 0);
 	modal = document.getElementById('id01');
-	socket.emit("getTerrain",1);
+	attackBall= createjs.Shape();
 	
+	canvas=document.getElementById("canvas");
 	// console.log(terr);
 
 }
-createjs.Ticker.setFPS(60);
-createjs.Ticker.addEventListener("tick",tick);
+
 
 socket.on('Terrain',function(data){
+		console.log("Terrain Response");
 		terr=data.terrain;
 		xpeak=data.x;
 		ypeak=data.y;
@@ -40,8 +44,11 @@ socket.on('Terrain',function(data){
 		tank1y=data.t1y;
 		tank2x=data.t2x;
 		tank2y=data.t2y;
-		console.log(terr);
+		// console.log(terr);
 	} );
+
+createjs.Ticker.setFPS(60);
+createjs.Ticker.addEventListener("tick",tick);
 
 function loginView()
 {
@@ -52,7 +59,8 @@ function loginView()
  	text.textBaseline = "alphabetic";
  	stage.addChild(text);
  	stage.update();
- 	console.log("loginView");
+ 	socket.emit("getTerrain",1);
+ 	// console.log("loginView");
 }
 
 
@@ -108,9 +116,11 @@ function starter()
  	stage.addChild(text);
 	
 	s.addEventListener('click', function (e) {
-	console.log(e.target + ' was double clicked!');
+	// console.log(e.target + ' was double clicked!');
 	view=1;
 	grap.clear();
+	// if(view==1)
+			
 
 	// stage.clear();
 	// terrain();
@@ -130,6 +140,7 @@ function starter()
 createjs.MotionGuidePlugin.install();
 var xcoor=[];
 var ycoor=[];
+var attackC=[];
 // var xpeak;
 // var ypeak;
 // var peakindex;
@@ -139,7 +150,7 @@ var ycoor=[];
 var slope1=0;
 function tanks()
 {
-	console.log(tank1x+"T1x"+tank1y+"T1y"+tank2x+"T2x"+tank2y+"T2y");
+	// console.log(tank1x+"T1x"+tank1y+"T1y"+tank2x+"T2x"+tank2y+"T2y");
 	var tgraph=new createjs.Graphics();
 	tgraph.beginStroke("red");
 	tgraph.beginFill("red");
@@ -173,7 +184,7 @@ function backButton()
 	btn.graphics.drawCircle(950,50,20);
 	stage.addChild(btn);
 	btn.addEventListener('click', function (e) {
-	console.log(e.target + ' was double clicked!');
+	// console.log(e.target + ' was double clicked!');
 	view=0;
 	tank2x=tank1y=tank1x=tank2y=0;
 	// grap.clear();
@@ -198,10 +209,48 @@ var power=0;
 var angle=0;
 
 
+function aMotion(i)
+{
+	attackBall.x+=1;
+			attackBall.y=attackC[i];
+			stage.update();
+}
 
 
-
-// socket.on('bpress2',function(data){attack(1);} );
+socket.on('attackR',function(data){
+		attackC=data.a;
+		var g1=new createjs.Graphics();
+		console.log("Response");
+		g1.beginFill("black");
+		g1.drawCircle(tank1x,tank1y,5);
+		attackBall=new createjs.Shape(g1);
+		
+		attackBall.x=0;
+		attackBall.y=0;
+		// var travel=[];
+		// for(var i=0;i<attackC.length;i+=1)
+		// {
+		// 	travel.push(i);
+		// 	travel.push(-attackC[i])	;
+		// }
+		if((attackC.length/2)%2!=1)
+		{
+			attackC.push(attackC[attackC.length-2]);
+			attackC.push(attackC[attackC.length-1]);	
+		}
+		console.log(attackC);
+		// stage.addChild(attackBall);
+		// stage.update();
+		createjs.Tween.get(attackBall).to({guide:{ path:attackC }},3000);
+		stage.addChild(attackBall);
+		stage.update();
+		// for(var i=0;i<attackC.length;i+=1)
+		// {
+			
+		// setTimeout(aMotion(i),3000);
+		// console.log(i);
+		// }
+	} );
 
 socket.on('loginResponse',function(data){
 	console.log(data);
@@ -209,7 +258,7 @@ socket.on('loginResponse',function(data){
 	{
 		// console.log("")
 		view=0;
-		console.log("Hello");
+		// console.log("Hello");
 		modal.style.display="none";
 		
 		
@@ -222,35 +271,42 @@ socket.on('loginResponse',function(data){
 	}
 
 });
-var attackC=[];
-var attackBall= createjs.Shape();
 
-socket.on('attackResponse',function(data){
-		console.log('My data is',data[0]);
-		attackC=data;
-		attackBall.graphics.beginFill("black");
-		attackBall.graphics.drawCircle(0,0,5);
-		attackBall.x=tank1x;
-		attackBall.y=tank1y;
-		stage.addChild(attackBall);
-		stage.update();
-		for(var i=0;i<attackC.length;i+=1)
-		{
-			attackBall.x+=1;
-			attackBall.y=attackC[i];
-			stage.update();
-		}
-	} );
+
+
 
 var first = 1;
+
 function attack(i)
-{	
+{		console.log('attacked');
 		power=parseInt(document.getElementById("power").value);
 		angle=parseInt(document.getElementById("angle").value);
-		console.log(power)
-		socket.emit('bpress',{p:power,ang:angle});
+		// console.log(power);
+		var da={p:power,ang:angle};
+		socket.emit('bpress',da);
+		// attackC=[ 346.39378360070873,
+  // 314.94595192185204,
+  // 294.62121445824613,
+  // 287.0204709676724,
+  // 285.4949406383611,
+  // 295.28017800066107,
+  // 317.2210925549729,
+  // 347.2757330532843 ];
+  // attackBall.graphics.beginFill("black");
+		// attackBall.graphics.drawCircle(0,0,5);
+		// attackBall.x=tank1x;
+		// attackBall.y=tank1y;
+		// stage.addChild(attackBall);
+		// stage.update();
+		// for(var i=0;i<attackC.length;i+=1)
+		// {
+		// 	attackBall.x+=1;
+		// 	attackBall.y=attackC[i];
+		// 	stage.update();
+		// }
 
-	// }	
+	}	
+// console.log("Hello World");
 	// if(i==1)
 	// {
 	// 	power=document.getElementById("power").value;
@@ -298,11 +354,14 @@ function attack(i)
 	// 	stage.update();
 		
 	// }
-}
+// }
+
+
 
 function terrain()
 {
 			document.getElementById("canvas").style.background="#87cefa";
+			
 			grap.clear();
 			stage.clear();
 			stage.update();
@@ -316,15 +375,16 @@ function terrain()
 				grap.quadraticCurveTo(i,terr[i],i+10,terr[i+10]);
 			}
 			grap.quadraticCurveTo(1000,terr[999],1000,500).quadraticCurveTo(1000,500,0,500);//.quadraticCurveTo(1400,450,0,650).quadraticCurveTo(0,650,0,400);
-			console.log(terr[800]);
+			// console.log(terr[800]);
 			shape=new createjs.Shape(grap);
 			stage.addChild(shape);
-			
+			console.log("Terrain Generated.");
 			// attack(1);
 			backButton();
 			stage.update();	
 			tanks();
-			// stage.update();
+			stage.update();
+			view=-2;
 
 }
 
@@ -346,10 +406,12 @@ function tick()
 	{
 		if(view==1)
 		{
-			view=-2;
+			console.log("Tick function for terrrain");
 			stage.removeAllChildren();
 			stage.update();
-			terrain();
+			if(view==1)
+			setTimeout(terrain(),2000);
+			// view=-2;
 		}
 		else
 		{
