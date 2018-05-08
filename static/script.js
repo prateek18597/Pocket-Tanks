@@ -63,12 +63,22 @@ function loginView()
  	// console.log("loginView");
 }
 
+function attackValue()
+{
+	document.getElementById("anglebar").innerHTML="Angle: "+ document.getElementById("angle").value;
+}
 
+function powerValue()
+{
+	document.getElementById("powerbar").innerHTML="Power: "+ document.getElementById("power").value;
+}
 
 function checkDatabase()
 {
 	var id=document.getElementById("username").value;
 	var pswd=document.getElementById("password").value;
+	document.getElementById("handle").value=id;
+	// document.getElementById("handle")
 	var up={username:id,password:pswd};
 	socket.emit('login',up);
 }

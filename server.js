@@ -143,10 +143,11 @@ function createTerrain()
 	}
 
 	tank1x=Math.floor(Math.random()*200)+200;
+
 	tank1y=terr[tank1x];
 	tank2x=900-Math.floor(Math.random()*400);
 	tank2y=terr[tank2x];
-	// console.log();
+	console.log(tank1x+"Tank 1y");
 	var tvalues={terrain:terr,x:xpeak,y:ypeak,t1x:tank1x,t1y:tank1y,t2x:tank2x,t2y:tank2y};
 	// socket.emit("Terrain",tvalues);
 }
@@ -214,25 +215,25 @@ function checkLogin(userid,password)
 var attackC=[];
 function attack(tx,power,angle)
 {
-	attackC=[];
-	var ty=0;
-	var txx=0;
-	var p;// power/=10;
-	var t=0;
+	// attackC=[];
+	// var ty=0;
+	// var txx=0;
+	// var p;// power/=10;
+	// var t=0;
 	
-		while( txx<=1000 && txx>=0){
+	// 	while( txx<=1000 && txx>=0){
 		
-		ty=1*Math.sin(angle*3.14/180)*t-5*t*t;
-		txx=Math.floor(1*Math.cos(angle*3.14/180)*t);
-		attackC.push(txx);
-		attackC.push(-1*ty);
-		t=t+0.1
-		}
+	// 	ty=1*Math.sin(angle*3.14/180)*t-5*t*t;
+	// 	txx=Math.floor(1*Math.cos(angle*3.14/180)*t);
+	// 	attackC.push(txx);
+	// 	attackC.push(-1*ty);
+	// 	t=t+0.1
+	// 	}
 	
-	for(var i=0;i<attackC.length;i+=1)
-	{
-		console.log(i+tx+" "+attackC[i]);
-	}
+	// for(var i=0;i<attackC.length;i+=1)
+	// {
+	// 	console.log(i+tx+" "+attackC[i]);
+	// }
 }
 
 function setLogin(userid,pswd)
