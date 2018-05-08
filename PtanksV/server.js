@@ -8,6 +8,10 @@ var app = express();
 var server = http.Server(app);
 var io = socketIO(server);
 var loginResult=false;
+
+var addScore=0;
+var hit = false;
+
 app.set('port', 5000);
 app.use('/static', express.static(__dirname + '/static'));
 
@@ -28,7 +32,7 @@ setInterval(function() {
 
 var connection=mysql.createConnection(
 {
-	host:"localhost",user:"root",password:"1111",database:"PocketTank"
+	host:"localhost",user:"root",password:"8p16ff0015",database:"PocketTank"
 });
 
 
@@ -244,11 +248,86 @@ function attack(tx,power,angle)
 		break;	
 
 	}	
+	var l = attackC.length ;
+
+	console.log('Hit is' ,attackC[l-2],tank2x);
+	
+	if(Math.abs(attackC[l-2] - tank2x)< 60 )
+	{	console.log("HIT DONE");
+		addScore =  Math.abs( 100 -Math.abs(attackC[l-2] - tank2x) ) ;
+		hit = true;
+	}	
+
+
+
 
 	//console.log(attackC);
+}
+
+
+function attack2(tx,power,angle)
+{	
+
+	var xpos = tank2x;
+	var ypos = 0;
+	attackC=[];
+	
+	var uh = power*(Math.cos(angle*2*3.14/360));
+	var uv = power*(Math.sin(angle*2*3.14/360));
+	
+	
+
+	var t = 0;
+	var xint;
+	while(xpos<=1000 && xpos>=0 )
+	{
+		xpos= tank2x - uh*t ;
+		ypos =  uv*t - 5*t*t;
+
+		t = t + 0.1 ;
+		attackC.push(xpos);
+		attackC.push(tank2y-10-ypos);
+
+		xint = Math.floor(xpos);
+		yint = (terr[xint]);
+
+		console.log(yint,(tank1y-ypos));
+
+		if( yint - (tank2y-ypos)  < 0 &&  xpos!=tank2x )
+		break;	
+
+	}	
+
+	var l = attackC.length ;
+
+	console.log('Hit is' ,attackC[l-2],tank1x);
+	
+	if(Math.abs(attackC[l-2] - tank1x)< 60 )
+	{	console.log("HIT DONE");
+		addScore =  Math.abs( 100 -Math.abs(attackC[l-2] - tank1x) ) ;
+		hit = true;
+	}	
+	//consoio.sockets.emit('attackR', {attackC:a,addScore:b});le.log(attackC);
 		
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function setLogin(userid,pswd)
 {
@@ -282,11 +361,44 @@ io.on('connection', function(socket) {
     console.log('INside bpress');
     attack(tank1x-10,data.p,data.ang);
     console.log(attackC.length);
- 	io.sockets.emit('attackR', attackC);
+ 	 if(hit == true)
+ 	 { io.sockets.emit('attackR', {a:attackC,b:addScore});
+	   hit = false;
+	 }
+	 else
+	 {
+	 	io.sockets.emit('attackR', {a:attackC,b:0});
+	 }
+
 	console.log("Hey");
  	// socket.broadcast.emit('bpress2', data);
 }
 );
+
+
+socket.on('bpress2', function(data) {
+    
+    console.log('INside bpress');
+    attack2(tank2x-10,data.p,data.ang);
+    console.log(attackC.length);
+
+     if(hit == true)
+ 	 { io.sockets.emit('attackR2', {a:attackC,b:addScore});
+	   hit = false;
+	 }
+	 else
+	 {
+	 	io.sockets.emit('attackR2', {a:attackC,b:0});
+	 }
+
+	console.log("Hey");
+ 	// socket.broadcast.emit('bpress2', data);
+}
+);
+
+
+
+
 
 
 socket.on('login', function(data) {

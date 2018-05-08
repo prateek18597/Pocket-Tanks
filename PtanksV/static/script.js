@@ -14,6 +14,10 @@ var tank1y=0;
 var tank2x=0;
 var tank2y=0;//		ctx.clearRect(0, 0, this.canvas.width+1, this.canvas.height+1);
 
+
+var scoreA=0;
+var scoreB=0;
+
 var socket = io();
 socket.on('message', function(data) {
   // console.log(data,socket.id);
@@ -255,9 +259,13 @@ var mm1;
 
 socket.on('attackR',function(data){
 		
-		attackC=data;
+		attackC=[];
+		attackC=data.a;
 		
+		scoreA+= data.b;
 		
+		console.log(scoreA);
+
 		console.log("Response");
 		console.log(attackC);
 		
@@ -274,6 +282,39 @@ socket.on('attackR',function(data){
 		
 		
 	} );
+
+socket.on('attackR2',function(data){
+		
+		attackC=[];
+		attackC=data.a;
+		
+		scoreB+= data.b;
+		
+		console.log('B ka score',scoreB);
+
+		console.log("Response");
+		console.log(attackC);
+		
+			
+		//createjs.Tween.get(attackBall).to({guide:{ path:attackC }},3000);
+		
+		var l=attackC.length;
+
+		
+	    setTimeout(aMotion(),50);
+			
+
+
+		
+		
+	} );
+
+
+
+
+
+
+
 
 socket.on('loginResponse',function(data){
 	console.log(data);
@@ -309,7 +350,15 @@ function attack(i)
 		socket.emit('bpress',da);
 }	
 
-
+function attack2(i)
+{		
+	    console.log('attacked B');
+		power = parseInt(document.getElementById("power").value);
+		angle = parseInt(document.getElementById("angle").value);
+		
+		var da={p:power,ang:angle};
+		socket.emit('bpress2',da);
+}
 
 function terrain()
 {
