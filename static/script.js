@@ -143,7 +143,7 @@ function tanks()
 	var tgraph=new createjs.Graphics();
 	tgraph.beginStroke("red");
 	tgraph.beginFill("red");
-	tgraph.drawRoundRect(tank1x,tank1y-15,25,15,5);
+	tgraph.drawRoundRect(tank1x-10,tank1y-25,25,15,5);
 	var tank=new createjs.Shape(tgraph);
 	// tank.regX=tank1x+12.5;
 	// tank.regY=tank1y+7.5;
@@ -193,6 +193,7 @@ function attackMotion(i)
 {
 
 }
+
 var power=0;
 var angle=0;
 
@@ -200,11 +201,11 @@ var angle=0;
 
 
 
-socket.on('bpress2',function(data){attack(1);} );
+// socket.on('bpress2',function(data){attack(1);} );
 
 socket.on('loginResponse',function(data){
 	console.log(data);
-	if(data.result)
+	if(data == true)
 	{
 		// console.log("")
 		view=0;
@@ -221,81 +222,82 @@ socket.on('loginResponse',function(data){
 	}
 
 });
+var attackC=[];
+var attackBall= createjs.Shape();
 
+socket.on('attackResponse',function(data){
+		console.log('My data is',data[0]);
+		attackC=data;
+		attackBall.graphics.beginFill("black");
+		attackBall.graphics.drawCircle(0,0,5);
+		attackBall.x=tank1x;
+		attackBall.y=tank1y;
+		stage.addChild(attackBall);
+		stage.update();
+		for(var i=0;i<attackC.length;i+=1)
+		{
+			attackBall.x+=1;
+			attackBall.y=attackC[i];
+			stage.update();
+		}
+	} );
 
 var first = 1;
 function attack(i)
 {	
-	if(first ==1)
-	{	first++;
-		socket.emit('bpress',1);
+		power=parseInt(document.getElementById("power").value);
+		angle=parseInt(document.getElementById("angle").value);
+		console.log(power)
+		socket.emit('bpress',{p:power,ang:angle});
 
-	}	
-	if(i==1)
-	{
-		power=document.getElementById("power").value;
-		angle=document.getElementById("angle").value;
-		console.log(power);
-		console.log("Angle is "+angle);
-		var ball = new createjs.Shape();
-		ball.graphics.beginFill("black");
-		ball.graphics.drawCircle(tank1x,tank1y,5);
-		// ball.x=tank1x;
-		// ball.y=tank1y;
-		console.log("Attacked");
-		var time=Math.abs(2*power*Math.sin(3.14*angle/180)/10);
-		var height=power*power*Math.sin(3.14*angle/180)*Math.sin(3.14*angle/180)/(20);
-		var range=power*power*Math.sin(3.14*angle/180)/10;
-		console.log(height);
-		console.log(range);
+	// }	
+	// if(i==1)
+	// {
+	// 	power=document.getElementById("power").value;
+	// 	angle=document.getElementById("angle").value;
+	// 	console.log(power);
+	// 	console.log("Angle is "+angle);
+	// 	var ball = new createjs.Shape();
+	// 	ball.graphics.beginFill("black");
+	// 	ball.graphics.drawCircle(tank1x,tank1y,5);
+	// 	ball.x=0;
+	// 	ball.y=0;
+
+
+
+	// 	var time=Math.abs(2*power*Math.sin(3.14*angle/180)/10);
+	// 	var height=power*power*Math.sin(3.14*angle/180)*Math.sin(3.14*angle/180)/(20);
+	// 	var range=power*power*Math.sin(3.14*angle/180)/10;
 		
 
-		createjs.Tween.get(ball).to({guide:{ path:[0,0, range/2,-height, range,0] }},time*100);
-		// createjs.Tween.get(ball).to({guide:{ path:[0,0,(tank2x-tank1x)/2,-200,tank2x-tank1x,tank2y-tank1y] }},7000);
-			// graphics.moveTo(0,0).curveTo(0,200,200,200).curveTo(200,0,0,0);
-		// createjs.Tween.get(ball).to({x:(Math.abs(tank1x)),y:Math.abs(tank2y)}, 2000, createjs.Ease.quadIn);
+	// 	createjs.Tween.get(ball).to({guide:{ path:[0,0, range/2,-height, range,0] }},time*100);
+	// 	stage.addChild(ball);
+	// 	stage.update();	
+	// }
 
-		stage.addChild(ball);
-		// for(var i=tank1x;i<tank2index;i++)
-		// {
-			
-		// }
-		stage.update();	
-	}
-
-	else
-	{
-		power=document.getElementById("power").value;
-		angle=document.getElementById("angle").value;
-		console.log(power);
-		angle=-angle;
-		console.log("Angle is "+angle);
-		var ball=new createjs.Shape();
-		ball.graphics.beginFill("black");
-		ball.graphics.drawCircle(tank2x,tank2y,5);
-		// ball.x=tank1x;
-		// ball.y=tank1y;
-		console.log("Attacked");
-		var time=Math.abs(2*power*Math.sin(3.14*angle/180)/10);
-		var height=power*power*Math.sin(3.14*angle/180)*Math.sin(3.14*angle/180)/(20);
-		var range=power*power*Math.sin(3.14*angle/180)/10;
-		console.log(height);
-		console.log(range);
+	// else
+	// {
+	// 	power=document.getElementById("power").value;
+	// 	angle=document.getElementById("angle").value;
+	// 	console.log(power);
+	// 	angle=-angle;
+	// 	console.log("Angle is "+angle);
+	// 	var ball=new createjs.Shape();
+	// 	ball.graphics.beginFill("black");
+	// 	ball.graphics.drawCircle(tank2x,tank2y,5);
+	// 	console.log("Attacked");
+	// 	var time=Math.abs(2*power*Math.sin(3.14*angle/180)/10);
+	// 	var height=power*power*Math.sin(3.14*angle/180)*Math.sin(3.14*angle/180)/(20);
+	// 	var range=power*power*Math.sin(3.14*angle/180)/10;
+	// 	console.log(height);
+	// 	console.log(range);
 		
 
-		createjs.Tween.get(ball).to({guide:{ path:[0,0, range/2,-height, range,0] }},time*1000);
-		// createjs.Tween.get(ball).to({guide:{ path:[0,0,(tank2x-tank1x)/2,-200,tank2x-tank1x,tank2y-tank1y] }},7000);
-			// graphics.moveTo(0,0).curveTo(0,200,200,200).curveTo(200,0,0,0);
-		// createjs.Tween.get(ball).to({x:(Math.abs(tank1x)),y:Math.abs(tank2y)}, 2000, createjs.Ease.quadIn);
-
-		stage.addChild(ball);
-		// for(var i=tank1x;i<tank2index;i++)
-		// {
-			
-		// }
-		stage.update();
-		// stage.removeChild(ball);	
-	}
+	// 	createjs.Tween.get(ball).to({guide:{ path:[0,0, range/2,-height, range,0] }},time*1000);
+	// 	stage.addChild(ball);
+	// 	stage.update();
+		
+	// }
 }
 
 function terrain()
@@ -309,9 +311,9 @@ function terrain()
 			grap.moveTo(0,500);
 			grap.beginLinearGradientFill(["#004d1a","#33ff77"], [0, 1], 0, 620, 0, 50);
 			 
-			for(var i=0;i<1000;i+=2)
+			for(var i=0;i<1000;i+=20)
 			{
-				grap.quadraticCurveTo(i,terr[i],i+2,terr[i+2]);
+				grap.quadraticCurveTo(i,terr[i],i+10,terr[i+10]);
 			}
 			grap.quadraticCurveTo(1000,terr[999],1000,500).quadraticCurveTo(1000,500,0,500);//.quadraticCurveTo(1400,450,0,650).quadraticCurveTo(0,650,0,400);
 			console.log(terr[800]);

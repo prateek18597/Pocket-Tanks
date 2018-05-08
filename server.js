@@ -7,7 +7,7 @@ var mysql=require('mysql');
 var app = express();
 var server = http.Server(app);
 var io = socketIO(server);
-
+var loginResult=false;
 app.set('port', 5000);
 app.use('/static', express.static(__dirname + '/static'));
 
@@ -31,14 +31,11 @@ var connection=mysql.createConnection(
 	host:"localhost",user:"root",password:"1111",database:"PocketTank"
 });
 
-// connection.connect(function(err){
-// 	if (err) throw err;
-// 	console.log("Connection Completed.");
-	
-// });
 
 var password1="";
 var userid1="";
+
+
 var terr=[];//It contains Location of Terrain coordinates(X coordinate is index of array element,y coordinate is value of array)
 var xpeak=0;//It contains x coordinate of peak;
 var ypeak=400;//It contains y coordinate of peak;
@@ -147,7 +144,7 @@ function createTerrain()
 
 	tank1x=Math.floor(Math.random()*200)+200;
 	tank1y=terr[tank1x];
-	tank2x=1000-Math.floor(Math.random()*400);
+	tank2x=900-Math.floor(Math.random()*400);
 	tank2y=terr[tank2x];
 	// console.log();
 	var tvalues={terrain:terr,x:xpeak,y:ypeak,t1x:tank1x,t1y:tank1y,t2x:tank2x,t2y:tank2y};
@@ -159,48 +156,84 @@ createTerrain();
 function getLogin()
 {
 	console.log("GetLogin is working.");
+	
 	connection.connect(function(err) {
   	// if (err) throw err;
   		connection.query("SELECT * FROM Login", function (err, result, fields) {
+
     // if (err) throw err;
     var str=JSON.stringify(result);
     var json=JSON.parse(str);
     userid1=json[0].id;
     password1=json[0].password;
+    console.log(userid1);
+
   });
+
 });
+
 }
 
-var loginResult;
+
 function checkLogin(userid,password)
 {
 	console.log("GetLogin is working.");
 	connection.connect(function(err) {
   	// if (err) throw err;
-  		connection.query("SELECT * FROM Login where id= '"+userid+"'", function (err, result, fields) {
-    // if (err) throw err;
+  		connection.query("SELECT * FROM Login where id= '"+ userid +"'", function (err, result, fields) {
+    if (result.length==1){
     var str=JSON.stringify(result);
     var json=JSON.parse(str);
-    if(result.length==1){
-    if (password==json[0].password)
-    {
-    	loginResult=true;
+    
+    if ( password == json[0].password )
+    {	
+    	
+    	loginResult = true;
+    	console.log("Inside function",loginResult);
     	console.log("Found a match");
+        
     	// socket.broadcast.emit('loginResponse', true);
     }
     else
     {
-    	loginResult=false;
+    	loginResult = false;
     	console.log("No match found");
     	// socket.broadcast.emit('loginResponse', false);
 	}
+	
 	}
 	else
 	{
-		loginResult=false;
+		loginResult = false;
+    	console.log("Username Wrong");
 	}
   });
 });
+}
+
+var attackC=[];
+function attack(tx,power,angle)
+{
+	attackC=[];
+	var ty=0;
+	// power/=10;
+	for(var i=tx;i<1000;i++)
+	{
+		var p=i-tx;
+		ty=power*Math.sin(angle*3.14/180)*p-5*p*p;
+		// console.log()
+		if(tank1y-ty-25>=terr[i])
+		{
+			console.log("Break.");
+			break;
+		}
+		attackC.push(terr[i]-ty);
+		// console.log(ty);
+	}
+	for(var i=0;i<attackC.length;i+=1)
+	{
+		console.log(i+tx+" "+attackC[i]);
+	}
 }
 
 function setLogin(userid,pswd)
@@ -212,29 +245,47 @@ function setLogin(userid,pswd)
   		connection.query(sql, function (err, result) {
     if (err) throw err;
     console.log("Data Inserted.");
+  
   });
 });	
 }
 
 
 
+
 io.on('connection', function(socket) {
+  	
+  socket.on('chat', function(data){
+    // console.log(data);
+    io.sockets.emit('chat', data);
+  });	
+
+
+
+
   socket.on('bpress', function(data) {
     
- 	socket.broadcast.emit('bpress2', data);
-	// setLogin("P","P"); 	
+    attack(tank1x-10,data.p,data.ang);
+    console.log(attackC);
+ 	setTimeout(function(){socket.emit('attackResponse', attackC);},1000);
+	
+ 	// socket.broadcast.emit('bpress2', data);
 }
 );
-  socket.on('login', function(data) {
+
+
+socket.on('login', function(data) {
     
- 	// socket.broadcast.emit('bpress2', data);
+ 	
 	checkLogin(data.username,data.password); 
-	if(loginResult==true)
-	socket.emit('loginResponse', {result:true});
-	else
-	socket.emit('loginResponse', {result:false});
+	
+	console.log(data.username,data.password);
+	
+	console.log('login result is',loginResult)
+	setTimeout(function(){socket.emit('loginResponse', loginResult)},1000 );
+	
 		
-	// console.log(data);	
+		
 }
 );
   socket.on('getTerrain', function(data) {
@@ -249,7 +300,20 @@ io.on('connection', function(socket) {
 	// console.log(data);	
 }
 );
+  socket.on('getAttack', function(data) {
+    
+ 	// socket.broadcast.emit('bpress2', data);
+	// checkLogin(data.username,data.password); 
+	// if(loginResult==true)
+	// socket.emit('Attack', {terrain:terr,x:xpeak,y:ypeak,t1x:tank1x,t1y:tank1y,t2x:tank2x,t2y:tank2y});
+	// else
+	// socket.emit('loginResponse', {result:false});
+		
+	// console.log(data);	
+}
+);
 });
+
 
 
 

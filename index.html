@@ -5,10 +5,8 @@
 		Pocket Tanks
 	</title>
 	
-	<script type="text/javascript" src="/static/easel.js"></script>
-	<script type="text/javascript" src="/static/tween.js"></script>
-	<script src="/socket.io/socket.io.js"></script>
-	<script type="text/javascript" src="/static/script.js"></script>
+
+	
 	
 	<style type="text/css">
 		body
@@ -149,6 +147,77 @@ span.psw {
 			/*margin-left: px;*/
 		}
 
+		.button {
+    	background-color: #4CAF50; /* Green */
+    	border: none;
+    	color: white;
+    	padding: 16px 32px;
+    	text-align: center;
+	    text-decoration: none;
+	    display: inline-block;
+	    font-size: 16px;
+	    margin: 4px 2px;
+	    -webkit-transition-duration: 0.4s; /* Safari */
+	    transition-duration: 0.4s;
+	    cursor: pointer;
+	  }
+
+		.button3 {
+	    background-color: white; 
+	    color: black; 
+	    border: 2px solid #f44336;
+	  }
+
+       .button3:hover {
+          background-color: #f44336;
+          color: white;
+     }
+
+     .button1 {
+    background-color: white; 
+    color: black; 
+    border: 2px solid #4CAF50;
+}
+
+.button1:hover {
+    background-color: #4CAF50;
+    color: white;
+}
+
+/* slider button*/
+
+
+.slider {
+    -webkit-appearance: none;
+    width: 25%;
+    height: 25px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+
+.slider:hover {
+    opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    background: #4CAF50;
+    cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    background: #4CAF50;
+    cursor: pointer;
+}
+
 	</style>
 
 </head>
@@ -183,25 +252,41 @@ span.psw {
 	<div id="anglediv">
 	<p id="anglebar" align="center">
 		
-		<input type="range" id="angle" name="Angle" min="0" max="360" value="45">
+		<input type="range" class ="slider" id="angle" name="Angle" min="0" max="360" value="45">
 		<br>
 		Angle
 		<!-- <button id="attack" onclick="attack(1)">Attack</button> -->
 	</p>
-	<button id="attack" onclick="attack(1)">Attack Player 1</button>
-	<button id="attack" style="margin-right: : 100px" onclick="attack(2)">Attack Player 2</button>
+	<button class ="button button1" id="attack" onclick="attack(1)">Attack Player 1</button>
+	<button class ="button button3" id="attack" style="margin-right: : 100px" onclick="attack(2)">Attack Player 2</button>
 	</div>
 	<div id="powerdiv">
 	<p id="powerbar" align="center">
 		
-		<input type="range" id="power" name="Power" min="0" max="100" value="50">
+		<input type="range" class="slider" id="power" name="Power" min="0" max="100" value="50">
 		<br>
 		Power Bar
 	</p>
-	
-	</div>
-	<!-- <button id="attack" sonclick="attack(1)">Attack</button> -->
+		
+	<div id="mario-chat">
+		<h2>Mario Chat</h2>
+		<div id="chat-window">
+			<div id="output"></div>
+		</div>
+		<input id="handle" type="text" placeholder="Handle" />
+		<input id="message" type="text" placeholder="Message" />
+		<button id="send" onclick="chatwork()" >Send</button>
 
 
 </body>
+
+	<script type="text/javascript" src="/static/easel.js"></script>
+	<script type="text/javascript" src="/static/tween.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="/static/chat.js"></script>	
+	<script type="text/javascript" src="/static/script.js"></script>
+	
+
+
+
 </html>
