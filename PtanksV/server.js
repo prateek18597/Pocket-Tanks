@@ -237,7 +237,7 @@ function attack(tx,power,angle)
 
 		t = t + 0.1 ;
 		attackC.push(xpos);
-		attackC.push(tank1y-10-ypos);
+		attackC.push(tank1y-20-ypos);
 
 		xint = Math.floor(xpos);
 		yint = (terr[xint]);
@@ -286,7 +286,7 @@ function attack2(tx,power,angle)
 
 		t = t + 0.1 ;
 		attackC.push(xpos);
-		attackC.push(tank2y-10-ypos);
+		attackC.push(tank2y-20-ypos);
 
 		xint = Math.floor(xpos);
 		yint = (terr[xint]);

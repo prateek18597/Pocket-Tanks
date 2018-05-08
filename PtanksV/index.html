@@ -199,6 +199,58 @@ span.psw {
 	    cursor: pointer;
 	  }
 
+.custom-select {
+  position: relative;
+  font-family: Arial;
+}
+.custom-select select {
+  display: none; /*hide original SELECT element:*/
+}
+.select-selected {
+  background-color: DodgerBlue;
+}
+/*style the arrow inside the select element:*/
+.select-selected:after {
+  position: absolute;
+  content: "";
+  top: 14px;
+  right: 10px;
+  width: 0;
+  height: 0;
+  border: 6px solid transparent;
+  border-color: #fff transparent transparent transparent;
+}
+/*point the arrow upwards when the select box is open (active):*/
+.select-selected.select-arrow-active:after {
+  border-color: transparent transparent #fff transparent;
+  top: 7px;
+}
+/*style the items (options), including the selected item:*/
+.select-items div,.select-selected {
+  color: #ffffff;
+  padding: 8px 16px;
+  border: 1px solid transparent;
+  border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
+  cursor: pointer;
+}
+/*style items (options):*/
+.select-items {
+  position: absolute;
+  background-color: DodgerBlue;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 99;
+}
+/*hide the items when the select box is closed:*/
+.select-hide {
+  display: none;
+}
+.select-items div:hover, .same-as-selected {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+
 		.button3 {
 	    background-color: white; 
 	    color: black; 
@@ -289,12 +341,53 @@ td
 	padding:1%;
 	overflow: hidden;
 }
+select {
+    padding:3px;
+    margin: 0;
+    -webkit-border-radius:4px;
+    -moz-border-radius:4px;
+    border-radius:4px;
+    -webkit-box-shadow: 0 3px 0 #ccc, 0 -1px #fff inset;
+    -moz-box-shadow: 0 3px 0 #ccc, 0 -1px #fff inset;
+    box-shadow: 0 3px 0 #ccc, 0 -1px #fff inset;
+    background: #f8f8f8;
+    color:#888;
+    border:none;
+    outline:none;
+    display: inline-block;
+    -webkit-appearance:none;
+    -moz-appearance:none;
+    appearance:none;
+    cursor:pointer;
+}
+
+/* Targetting Webkit browsers only. FF will show the dropdown arrow with so much padding. */
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+    select {padding-right:18px}
+}
 	</style>
 
 
 </head>
 <body onload="init()">
 	<!-- <div style="display: inline;"> -->
+		<div align="center">
+		  	<label id="player1" style="color: white;float: left;">Player1: 0</label>
+		  	<select id="computer">
+		    <option value="0">Select Mode:</option>
+		    <option value="1">Single Player</option>
+		    <option value="0">Two Player</option>
+		    <option value="2">Inteligent Player</option>
+		  </select>
+		  <select id="env">
+		  		<option value="0">Select Environment:</option>
+				<option value="1">Day</option>
+				<option value="0">Night</option>
+			</select>
+			<label id="player2" style="color: white;float: right;">Player2: 0</label>
+		</div>
+		
 		<table>
 			<tr>
 				<td align="left" style="float: left;margin-left: 2%;width: 1000px;">
@@ -308,7 +401,7 @@ td
 	<div align="center">
 	<ul>
 	<li style="float: left;">
-		<button class ="button button1"  id="attack" onclick="attack(1)">
+		<button class ="button button1"  id="attack1" onclick="attack(1)">
 		Attack Player 1</button>
 	</li>
 	<li>
@@ -328,7 +421,7 @@ td
 	</div>
 	</li>
 	<li style="float: right;">
-		<button class ="button button3" id="attack"  onclick="attack2(2)">Attack Player 2</button>
+		<button class ="button button3" id="attack2"  onclick="attack2(2)">Attack Player 2</button>
 	</li>	
 	</ul>
 		</div>
@@ -360,6 +453,7 @@ td
 	      <input type="password" id="password" placeholder="Enter Password" name="psw" required>
 	        
 	      <button type="button" onclick="checkDatabase()">Login</button>
+	      
 	      <label>
 	        <input type="checkbox" checked="checked" name="remember"> Remember me
 	      </label>

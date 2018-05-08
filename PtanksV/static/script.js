@@ -13,7 +13,10 @@ var tank1x=0;
 var tank1y=0;
 var tank2x=0;
 var tank2y=0;//		ctx.clearRect(0, 0, this.canvas.width+1, this.canvas.height+1);
+var  computer=0,env=1;
 
+var turn1=0;
+var turn2=0;
 
 var scoreA=0;
 var scoreB=0;
@@ -133,28 +136,18 @@ function starter()
 	// console.log(e.target + ' was double clicked!');
 	view=1;
 	grap.clear();
-	// if(view==1)
-			
+	computer=parseInt(document.getElementById("computer").value);
 
-	// stage.clear();
-	// terrain();
+	env=document.getElementById("env").value;
 });
 	
-// 	s1.addEventListener('dblclick', function (e) {
-// 	console.log(e.target + ' was double clicked!');
-// 	view=2;
-// });
-	
-// 	s2.addEventListener('dblclick', function (e) {
-// 	console.log(e.target + ' was double clicked!');
-// 	view=3;
-// });
 	
 }
 createjs.MotionGuidePlugin.install();
 var xcoor=[];
 var ycoor=[];
 var attackC=[];
+
 // var xpeak;
 // var ypeak;
 // var peakindex;
@@ -162,6 +155,7 @@ var attackC=[];
 // var tank2index=0;
 
 var slope1=0;
+
 function tanks()
 {
 	console.log(tank1x+"T1x"+tank1y+"T1y"+tank2x+"T2x"+tank2y+"T2y");
@@ -178,9 +172,8 @@ function tanks()
 	img2.rotation=20;
 	stage.addChild(img2);
 	stage.update();
-	
-	
 }
+
 function backButton()
 {
 	var btn=new createjs.Shape();
@@ -234,11 +227,36 @@ function aMotion()
     	g1.clear();
     	//stage.removeChild(attackBall);
     	stage.update();
-    }	
+    	if(turn2==10)
+		{
+			if(scoreB>scoreA)
+			{
+				alert("Congratulations Player2");
+			}
+			else
+			{
+				alert("Congratulations Player1");	
+			}
+		}
+    }
+    	
 		
-	//setTimeout(stage.removeChild(attackBall),4);
+	// setTimeout(scoreCard(),3000);
 }
 
+// function scoreCard(){
+// if(turn2==10)
+// 		{
+// 			if(scoreB>scoreA)
+// 			{
+// 				alert("Congratulations Player2");
+// 			}
+// 			else
+// 			{
+// 				alert("Congratulations Player1");	
+// 			}
+// 		}
+// }
 var g1=new createjs.Graphics();
 
 attackBall=new createjs.Shape(g1);
@@ -255,7 +273,7 @@ socket.on('attackR',function(data){
 		scoreA+= data.b;
 		
 		console.log(scoreA);
-
+		document.getElementById("player1").innerHTML="Player1: "+scoreA;
 		console.log("Response");
 		console.log(attackC);
 		
@@ -281,18 +299,18 @@ socket.on('attackR2',function(data){
 		scoreB+= data.b;
 		
 		console.log('B ka score',scoreB);
-
+		document.getElementById("player2").innerHTML="Player2: "+scoreB;
 		console.log("Response");
 		console.log(attackC);
-		
-			
+
 		//createjs.Tween.get(attackBall).to({guide:{ path:attackC }},3000);
 		
 		var l=attackC.length;
 
 		
 	    setTimeout(aMotion(),50);
-			
+
+		
 
 
 		
@@ -314,6 +332,7 @@ socket.on('loginResponse',function(data){
 		view=0;
 		// console.log("Hello");
 		modal.style.display="none";
+		alert("Make sure to Select Battle Mode and Environment.");
 		
 		
 	}
@@ -332,28 +351,64 @@ socket.on('loginResponse',function(data){
 var first = 1;
 
 function attack(i)
-{		console.log('attacked');
+{		
+	if(turn1==turn2){
+		console.log('attacked');
 		power=parseInt(document.getElementById("power").value);
 		angle=parseInt(document.getElementById("angle").value);
 		
 		var da={p:power,ang:angle};
 		socket.emit('bpress',da);
+		turn1+=1;
+	}
+	else
+	{
+		alert("You can only attack once.");
+	}
 }	
 
 function attack2(i)
 {		
+
+		if(turn2+1==turn1){
+
 	    console.log('attacked B');
 		power = parseInt(document.getElementById("power").value);
 		angle = parseInt(document.getElementById("angle").value);
+
 		
+		if(computer==1)
+		{
+			angle = Math.random()*(90);
+			power = Math.random()*(100);
+		}
+		else
+		{
+			// if(computer==2)
+			// {
+			// 	angle=85*3.14/180;
+			// 	var xdef=tank1x-tank2x;
+			// 	var ydef=tank1y-tank2y;
+			// 	power=0.01*Math.sqrt(10*xdef*xdef/(2*Math.cos(angle)*Math.cos(angle)*(xdef*Math.tan(angle)-ydef)));
+			// }
+		}	
 		var da={p:power,ang:angle};
 		socket.emit('bpress2',da);
+		turn2+=1;
+	}
+	else
+	{
+		alert("You can only attack once.");
+	}
 }
 
 function terrain()
 {
+
+		if(env=="1")
 			document.getElementById("canvas").style.background="#87cefa";
-			
+		else
+			document.getElementById("canvas").style.background="#1f263b";
 			grap.clear();
 			stage.clear();
 			stage.update();
@@ -367,21 +422,13 @@ function terrain()
 				grap.quadraticCurveTo(i,terr[i],i+10,terr[i+10]);
 			}
 			grap.quadraticCurveTo(1000,terr[999],1000,500).quadraticCurveTo(1000,500,0,500);//.quadraticCurveTo(1400,450,0,650).quadraticCurveTo(0,650,0,400);
-			// console.log(terr[800]);
 			shape=new createjs.Shape(grap);
 			stage.addChild(shape);
 			console.log("Terrain Generated.");
-			// attack(1);
-			backButton();
 			stage.update();	
 			tanks();
 			stage.update();
 			view=-2;
-
-}
-
-function mainmenu()
-{
 
 }
 
@@ -420,7 +467,6 @@ function tick()
 	{
 		aMotion();
 	}	
-	// stage.removeChild(ball);
 	stage.update();			
 }
 
