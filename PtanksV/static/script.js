@@ -124,21 +124,6 @@ function starter()
 	s.name="Play Button";
 	grap.endFill();
 	stage.addChild(s);
-	grap.beginStroke("black");
-	grap.beginFill("red");
-	grap.drawCircle(100,380,30);
-	
-	var s2=new createjs.Shape(grap);
-	s2.name="Option Button";
-	grap.endFill();
-	// stage.addChild(s2);
-	grap.beginStroke("black");
-	grap.beginFill("red");
-	grap.drawCircle(900,380,30);
-	
-	var s1=new createjs.Shape(grap);
-	s1.name="About Button";
-	grap.endFill();
 	// stage.addChild(s1);
 	
 	var text = new createjs.Text("Pocket Tanks", "60px Script", "white");
