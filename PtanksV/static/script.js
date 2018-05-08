@@ -14,6 +14,9 @@ var tank1y=0;
 var tank2x=0;
 var tank2y=0;//		ctx.clearRect(0, 0, this.canvas.width+1, this.canvas.height+1);
 var  computer=0,env=1;
+var weapon=0;
+var soundID="Tinkling";
+var soundID2="Gun";
 
 var turn1=0;
 var turn2=0;
@@ -37,8 +40,25 @@ function powerValue()
 	document.getElementById("powerbar").innerHTML="Power: "+ document.getElementById("power").value;
 }
 
+function playSound()
+{
+	createjs.Sound.play(soundID);
+}
+
+function playGun()
+{
+	createjs.Sound.play(soundID2);
+}
+
+function loadSound()
+{
+	createjs.Sound.registerSound("/static/bcg.mp3",soundID);
+	createjs.Sound.registerSound("/static/bomb.mp3",soundID2);
+}
+
 function init()
 {
+	loadSound();
 	console.log("Init function completed");
 	stage=new createjs.Stage("canvas");
 		// ctx= document.getElementById("canvas").getContext("2d");
@@ -84,6 +104,7 @@ function loginView()
 
 function checkDatabase()
 {
+	playSound();
 	var id=document.getElementById("username").value;
 	var pswd=document.getElementById("password").value;
 	var up={username:id,password:pswd};
@@ -158,7 +179,7 @@ var slope1=0;
 
 function tanks()
 {
-	console.log(tank1x+"T1x"+tank1y+"T1y"+tank2x+"T2x"+tank2y+"T2y");
+	// console.log(tank1x+"T1x"+tank1y+"T1y"+tank2x+"T2x"+tank2y+"T2y");
 	img1=new createjs.Bitmap("/static/tank.png");
 	img1.x=tank1x-20;
 	img1.y=tank1y-20;
@@ -209,9 +230,28 @@ var angle=0;
 var it=0;
 function aMotion()
 {	
-	if(it < attackC.length){	
-	g1.beginFill("black");
-	g1.drawCircle(attackC[it],attackC[it+1],5);
+	if(it < attackC.length){
+	if(weapon==0)
+	{
+		g1.beginFill("black");
+		g1.drawCircle(attackC[it],attackC[it+1],5);
+	
+	}
+	else
+	{
+		if(weapon==1)
+		{
+			g1.beginFill("black");
+			g1.drawCircle(attackC[it],attackC[it+1],8);
+	
+		}
+		else
+		{
+			g1.beginFill("red");
+			g1.drawCircle(attackC[it],attackC[it+1],3);
+	
+		}
+	}	
 		
 	stage.addChild(attackBall);	
 	stage.update();
@@ -272,11 +312,11 @@ socket.on('attackR',function(data){
 		
 		scoreA+= data.b;
 		
-		console.log(scoreA);
+		// console.log(scoreA);
 		document.getElementById("player1").innerHTML="Player1: "+scoreA;
-		console.log("Response");
-		console.log(attackC);
-		
+		// console.log("Response");
+		// console.log(attackC);
+		turn1+=1;	
 			
 		//createjs.Tween.get(attackBall).to({guide:{ path:attackC }},3000);
 		
@@ -294,14 +334,15 @@ socket.on('attackR',function(data){
 socket.on('attackR2',function(data){
 		
 		attackC=[];
+		turn2+=1;
 		attackC=data.a;
 		
 		scoreB+= data.b;
 		
-		console.log('B ka score',scoreB);
+		// console.log('B ka score',scoreB);
 		document.getElementById("player2").innerHTML="Player2: "+scoreB;
-		console.log("Response");
-		console.log(attackC);
+		// console.log("Response");
+		// console.log(attackC);
 
 		//createjs.Tween.get(attackBall).to({guide:{ path:attackC }},3000);
 		
@@ -325,7 +366,7 @@ socket.on('attackR2',function(data){
 
 
 socket.on('loginResponse',function(data){
-	console.log(data);
+	// console.log(data);
 	if(data == true)
 	{
 		// console.log("")
@@ -353,13 +394,15 @@ var first = 1;
 function attack(i)
 {		
 	if(turn1==turn2){
-		console.log('attacked');
+		playGun();
+		// console.log('attacked');
 		power=parseInt(document.getElementById("power").value);
 		angle=parseInt(document.getElementById("angle").value);
 		
 		var da={p:power,ang:angle};
 		socket.emit('bpress',da);
-		turn1+=1;
+		// turn1+=1;
+		weapon=parseInt(document.getElementById("weapon").value);
 	}
 	else
 	{
@@ -371,8 +414,8 @@ function attack2(i)
 {		
 
 		if(turn2+1==turn1){
-
-	    console.log('attacked B');
+			playGun();
+	    // console.log('attacked B');
 		power = parseInt(document.getElementById("power").value);
 		angle = parseInt(document.getElementById("angle").value);
 
@@ -394,7 +437,8 @@ function attack2(i)
 		}	
 		var da={p:power,ang:angle};
 		socket.emit('bpress2',da);
-		turn2+=1;
+		// turn2+=1;
+		weapon=parseInt(document.getElementById("weapon").value);
 	}
 	else
 	{
@@ -424,7 +468,7 @@ function terrain()
 			grap.quadraticCurveTo(1000,terr[999],1000,500).quadraticCurveTo(1000,500,0,500);//.quadraticCurveTo(1400,450,0,650).quadraticCurveTo(0,650,0,400);
 			shape=new createjs.Shape(grap);
 			stage.addChild(shape);
-			console.log("Terrain Generated.");
+			// console.log("Terrain Generated.");
 			stage.update();	
 			tanks();
 			stage.update();
@@ -445,7 +489,7 @@ function tick()
 	{
 		if(view==1)
 		{
-			console.log("Tick function for terrrain");
+			// console.log("Tick function for terrrain");
 			stage.removeAllChildren();
 			stage.update();
 			if(view==1)

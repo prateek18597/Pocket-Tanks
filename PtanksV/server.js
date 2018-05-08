@@ -23,7 +23,7 @@ app.get('/Game', function(request, response) {
 
 // Starts the server.
 server.listen(5000, function() {
-  console.log('Starting server on port 5000');
+  // console.log('Starting server on port 5000');
 });
 
 setInterval(function() {	
@@ -159,7 +159,7 @@ createTerrain();
 
 function getLogin()
 {
-	console.log("GetLogin is working.");
+	// console.log("GetLogin is working.");
 	
 	connection.connect(function(err) {
   	// if (err) throw err;
@@ -170,7 +170,7 @@ function getLogin()
     var json=JSON.parse(str);
     userid1=json[0].id;
     password1=json[0].password;
-    console.log(userid1);
+    // console.log(userid1);
 
   });
 
@@ -181,7 +181,7 @@ function getLogin()
 
 function checkLogin(userid,password)
 {
-	console.log("GetLogin is working.");
+	// console.log("GetLogin is working.");
 	connection.connect(function(err) {
   	// if (err) throw err;
   		connection.query("SELECT * FROM Login where id= '"+ userid +"'", function (err, result, fields) {
@@ -193,15 +193,15 @@ function checkLogin(userid,password)
     {	
     	
     	loginResult = true;
-    	console.log("Inside function",loginResult);
-    	console.log("Found a match");
+    	// console.log("Inside function",loginResult);
+    	// console.log("Found a match");
         
     	// socket.broadcast.emit('loginResponse', true);
     }
     else
     {
     	loginResult = false;
-    	console.log("No match found");
+    	// console.log("No match found");
     	// socket.broadcast.emit('loginResponse', false);
 	}
 	
@@ -209,7 +209,7 @@ function checkLogin(userid,password)
 	else
 	{
 		loginResult = false;
-    	console.log("Username Wrong");
+    	// console.log("Username Wrong");
 	}
   });
 });
@@ -242,7 +242,7 @@ function attack(tx,power,angle)
 		xint = Math.floor(xpos);
 		yint = (terr[xint]);
 
-		console.log(yint,(tank1y-ypos));
+		// console.log(yint,(tank1y-ypos));
 
 		if( yint - (tank1y-ypos)  < 0 &&  xpos!=tank1x )
 		break;	
@@ -250,10 +250,11 @@ function attack(tx,power,angle)
 	}	
 	var l = attackC.length ;
 
-	console.log('Hit is' ,attackC[l-2],tank2x);
+	// console/.log('Hit is' ,attackC[l-2],tank2x);
 	
 	if(Math.abs(attackC[l-2] - tank2x)< 60 )
-	{	console.log("HIT DONE");
+	{	
+		// console.log("HIT DONE");
 		addScore =  Math.abs( 100 -Math.abs(attackC[l-2] - tank2x) ) ;
 		hit = true;
 	}	
@@ -291,7 +292,7 @@ function attack2(tx,power,angle)
 		xint = Math.floor(xpos);
 		yint = (terr[xint]);
 
-		console.log(yint,(tank1y-ypos));
+		// console.log(yint,(tank1y-ypos));
 
 		if( yint - (tank2y-ypos)  < 0 &&  xpos!=tank2x )
 		break;	
@@ -300,10 +301,11 @@ function attack2(tx,power,angle)
 
 	var l = attackC.length ;
 
-	console.log('Hit is' ,attackC[l-2],tank1x);
+	// console.log('Hit is' ,attackC[l-2],tank1x);
 	
 	if(Math.abs(attackC[l-2] - tank1x)< 60 )
-	{	console.log("HIT DONE");
+	{	
+		// console.log("HIT DONE");
 		addScore =  Math.abs( 100 -Math.abs(attackC[l-2] - tank1x) ) ;
 		hit = true;
 	}	
@@ -331,13 +333,13 @@ function attack2(tx,power,angle)
 
 function setLogin(userid,pswd)
 {
-	console.log("SetLogin is working.");
+	// console.log("SetLogin is working.");
 	connection.connect(function(err) {
   	var sql="INSERT INTO Login (id,password) VALUES ('"+String(userid)+"','"+String(pswd)+"')";
-  		console.log("Second");
+  		// console.log("Second");
   		connection.query(sql, function (err, result) {
     if (err) throw err;
-    console.log("Data Inserted.");
+    // console.log("Data Inserted.");
   
   });
 });	
@@ -358,9 +360,9 @@ io.on('connection', function(socket) {
 
   socket.on('bpress', function(data) {
     
-    console.log('INside bpress');
+    // console.log('INside bpress');
     attack(tank1x-10,data.p,data.ang);
-    console.log(attackC.length);
+    // console.log(attackC.length);
  	 if(hit == true)
  	 { io.sockets.emit('attackR', {a:attackC,b:addScore});
 	   hit = false;
@@ -370,7 +372,7 @@ io.on('connection', function(socket) {
 	 	io.sockets.emit('attackR', {a:attackC,b:0});
 	 }
 
-	console.log("Hey");
+	// console.log("Hey");
  	// socket.broadcast.emit('bpress2', data);
 }
 );
@@ -378,9 +380,9 @@ io.on('connection', function(socket) {
 
 socket.on('bpress2', function(data) {
     
-    console.log('INside bpress');
+    // console.log('INside bpress');
     attack2(tank2x-10,data.p,data.ang);
-    console.log(attackC.length);
+    // console.log(attackC.length);
 
      if(hit == true)
  	 { io.sockets.emit('attackR2', {a:attackC,b:addScore});
@@ -391,7 +393,7 @@ socket.on('bpress2', function(data) {
 	 	io.sockets.emit('attackR2', {a:attackC,b:0});
 	 }
 
-	console.log("Hey");
+	// console.log("Hey");
  	// socket.broadcast.emit('bpress2', data);
 }
 );
@@ -406,9 +408,9 @@ socket.on('login', function(data) {
  	
 	checkLogin(data.username,data.password); 
 	
-	console.log(data.username,data.password);
+	// console.log(data.username,data.password);
 	
-	console.log('login result is',loginResult);
+	// console.log('login result is',loginResult);
 	setTimeout(function(){socket.emit('loginResponse', loginResult);},1000 );
 	
 		

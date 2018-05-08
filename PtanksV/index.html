@@ -344,6 +344,7 @@ td
 select {
     padding:3px;
     margin: 0;
+    width: 200px;
     -webkit-border-radius:4px;
     -moz-border-radius:4px;
     border-radius:4px;
@@ -399,6 +400,14 @@ select {
 		
 	<br>
 	<div align="center">
+		<div>
+	<select id="weapon" style="width: 250px;">
+		    <option value="0">Select Mode:</option>
+		    <option value="0">Small Shot</option>
+		    <option value="1">Big Shot</option>
+		    <option value="2">Fireball</option>
+		  </select>
+	</div>
 	<ul>
 	<li style="float: left;">
 		<button class ="button button1"  id="attack1" onclick="attack(1)">
@@ -418,11 +427,13 @@ select {
 			Power: 50
 		</p>
 	</div>
+	
 	</div>
 	</li>
 	<li style="float: right;">
 		<button class ="button button3" id="attack2"  onclick="attack2(2)">Attack Player 2</button>
-	</li>	
+	</li>
+
 	</ul>
 		</div>
 				</td>
@@ -466,10 +477,12 @@ select {
 	</div>
 	
 </body>
+	<script type="text/javascript" src="/static/createjs.min.js"></script>
 	<script type="text/javascript" src="/static/easel.js"></script>
 	<script type="text/javascript" src="/static/tween.js"></script>
 	<script src="/socket.io/socket.io.js"></script>
 	<script src="/static/chat.js"></script>	
 	<script type="text/javascript" src="/static/script.js"></script>
+	<!-- <script type="text/javascript" src="/static/script.js"></script> -->
 </html>
 
