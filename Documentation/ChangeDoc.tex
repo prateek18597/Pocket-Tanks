@@ -1,0 +1,73 @@
+\documentclass[14pt]{extarticle}
+%\usepackage[a4paper,vmargin={20mm,20mm},hmargin={20mm,10mm}]{geometry}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usepackage{eso-pic}
+
+\usepackage{lipsum}
+
+\AddToShipoutPictureBG{%
+\begin{tikzpicture}[overlay,remember picture]
+\draw[line width=4pt]
+    ($ (current page.north west) + (1cm,-1cm) $)
+    rectangle
+    ($ (current page.south east) + (-1cm,1cm) $);
+\draw[line width=1.5pt]
+    ($ (current page.north west) + (1.2cm,-1.2cm) $)
+    rectangle
+    ($ (current page.south east) + (-1.2cm,1.2cm) $);
+\end{tikzpicture}
+}
+\usepackage{color}
+\author{\textbf{Vaibhav Vashisht} 2016CSJ0002  \\\textbf{Pratik Parmar} 2016CSJ0049}
+\title{\textbf{\textit{COP290: Design Practices}\\ \textit{Change Document} \\ \textit{Pocket Tanks}  }}
+\begin{document}
+
+%\end{document}
+%\trimFrame  
+%\settrimmedsize{210mm}{145mm}{*} 
+%\settrims{20mm}{34mm}
+\maketitle
+\newpage
+
+\begin{center}
+
+\section*{\texttt{Changes}
+}
+\end{center}
+\section{\underline{Number of Players:}}
+%\begin{center}
+We have implemented only 2-players game either they can play in multiplayer or a single player can play against computer.
+%\end{center}
+\section{\underline{Weapons:}}
+%\begin{center}
+Due to some lack of knowledge about createjs we have not been able to implement many weapons instead we have 3 differnt weapons in our game instead we have a single weapon game
+%\end{center}
+\section{\underline{Terrain:}}
+%\begin{center}
+We have not been able to implement destruction of terrain on getting hit by weapons.
+%\end{center}
+\section{\underline{Tank Movement:}}
+%\begin{center}
+Tank have not been allowed to move.
+%\end{center}
+\section{\underline{Background:}}
+%\begin{center}
+We have only implemented simple day type background.
+%\end{center}
+\section{\underline{Server and Communication:}}
+%\begin{center}
+We have implemented server using nodejs and express.Communication b/w client and server occurs via socket.io .
+%\end{center}
+\section{\underline{Database:}}
+%\begin{center}
+MySQL database has been used for implementing LoginID feature.
+%\end{center}
+\
+\section{\underline{Graphics and Sound:}}
+%\begin{center}
+Graphics are rendered using HTML canvas and createjs,music has been added using soundJS.
+%\end{center}
+
+
+\end{document}

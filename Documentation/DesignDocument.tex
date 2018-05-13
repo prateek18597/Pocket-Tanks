@@ -1,0 +1,299 @@
+\documentclass[12pt]{extarticle}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usepackage{eso-pic}
+\usepackage{datetime}
+\usepackage{lipsum}
+\AddToShipoutPictureBG{%
+\begin{tikzpicture}[overlay,remember picture]
+\draw[line width=6pt]
+    ($ (current page.north west) + (0.8cm,-0.8cm) $)
+    rectangle
+    ($ (current page.south east) + (-0.8cm,0.8cm) $);
+\draw[line width=1.5pt]
+    ($ (current page.north west) + (1.2cm,-1.2cm) $)
+    rectangle
+    ($ (current page.south east) + (-1.2cm,1.2cm) $);
+\end{tikzpicture}
+}
+\usepackage{color}
+\date{}
+\author{\textbf{Vaibhav Vashisht} 2016CSJ0002  \\\textbf{Pratik Parmar} 2016CSJ0049}
+\title{\textbf{COP290: Design Practices\\ Design Document \\ Pocket Tanks  }}
+\begin{document}
+\maketitle
+\newpage
+\tableofcontents
+\newpage
+\section{Introduction}
+
+\subsection{Purpose}
+The purpose of this document is to describe the implementation of "Pocket Tank web game" developed by us.
+\subsection{Scope}
+The Software consist of following functionality.
+\begin{enumerate}
+\item \textbf{Offline Gaming:} Pocket Tank will be played on one computer by both the players.
+\item \textbf{Server Side:} Server will be created so that 2 players can play this game from their computer.
+\item \textbf{Chat System:} Chatting Facility for players to communicate during their match.
+\end{enumerate}
+
+\section{Overall Design}
+\subsection{About}
+
+\paragraph{Part 1:}In this portion of the program, two players will be able to compete with each other on one computer. Each player will have their turn alternatively. This single node server application will have a option for team up so total of 4 players can play this game in a team of 2.
+
+\paragraph{Part 2:}
+In this portion of the program, two players will be able to compete with each other through different computers connected on same server. Each player will have their turn alternatively.	
+
+\paragraph{Part 3:}	
+Chatting system will provide facility for video, audio and text exchange facility to the players to communicate will each other. It can only be activated by players.
+
+\subsection{Game Design}
+
+\paragraph{Weapons}
+There will be a total of 20 weapons available to players. Out of which players can select 10 weapons in their armory. There will be a option for automatic selection for the player(It will be either completely random selection or some predefined armory will be given to the player). On online mode of the game players will not see other player's selection of weapons until his selection is completed.
+
+\begin{enumerate}
+\item Weapon 1 \\
+\textbf{Single Shot} 	
+The default weapon, medium sized explosion and good points.
+\item Weapon 2 \\
+\textbf{Big Shot} 	
+Large explosion radius, but points are low.
+\item Weapon 3 \\
+\textbf{3 Shot} 	
+3 bullet spread, medium explosion size, low points per explosion.
+\item Weapon 4 \\
+\textbf{5 Shot} 	
+5 bullet spread, medium explosion size, very low points per explosion
+\item Weapon 5 \\
+\textbf{Jackhammer} 	
+Bullet bounces straight up 5 times... lots of fun to use
+\item Weapon 6 \\
+\textbf{Heatseeker} 	
+If the bullet gets close to the opponents tank, it flies toward it
+\item Weapon 7 \\
+\textbf{Tracer} 		
+Fires a spread of 5 bullets that tell you how much to change your angle for the next turn
+\item Weapon 8 \\
+\textbf{Pile Driver} 	
+Small amount of damage, but explosions are directed down creating a hole
+\item Weapon 9 \\
+\textbf{Dirt Mover} 	
+Directional dirt removal based on the angle when fired
+\item Weapon 10 \\
+\textbf{Crazy Ivan} 	
+Proximity-based multi-warhead with unusual yet fun results
+\item Weapon 11 \\
+\textbf{Spider} 	
+Spider web effect that sprays the closest tank when it goes off
+\item Weapon 12 \\
+\textbf{Sniper Rifle} 	
+No explosion radius, large points, throws the tank nicely, deadly
+\item Weapon 13 \\
+\textbf{Magic Wall} 	
+Vertical wall will grow where the bullet lands
+\item Weapon 14 \\
+\textbf{Dirt Slinger} 	
+V-shape dirt effect based on location where bullet lands
+\item Weapon 15 \\
+\textbf{Zapper} 	
+Laser beam emits from bullet if it gets close to tank
+\item Weapon 16 \\
+\textbf{Napalm} 	
+Exploding liquid that covers and burns everything caught in its wake
+\item Weapon 17 \\
+\textbf{Hail Storm} 	
+Hundreds of bouncing ice pellets that flow along the ground
+\item Weapon 18 \\
+\textbf{Ground Hog} 	
+Ground weapon that tunnels through the dirt and explodes on other side
+\item Weapon 19 \\
+\textbf{Worm} 	
+Ground weapon that tunnels through dirt, but tries to dig upward
+\item Weapon 20 \\
+\textbf{Homing Worm} 	
+Same as worm, but stops when it passes under tank and rises upward
+\item Weapon 21 \\
+\textbf{Skipper} 	
+Skips a number of times before exploding
+\item Weapon 22 \\
+\textbf{Chain Reaction} 	
+Random explosions in the general area where the bullet landed
+\item Weapon 23 \\
+\textbf{Pineapple} 	
+Shell explodes when close to a tank, emitting a large number of tiny explosions
+\item Weapon 24 \\
+\textbf{Firecracker} 	
+Horizontal spread of explosions based on where the bullet lands
+\item Weapon 25 \\
+\textbf{Homing Missile} 	
+Stops horizontal speed when it passes over a tank
+\item Weapon 26 \\
+\textbf{Dirtball} 	
+Dirt forms where bullet lands
+\item Weapon 27 \\
+\textbf{Tommy Gun} 	
+A very satisfying automatic machine gun-style weapon
+\item Weapon 28 \\
+\textbf{Mountain Mover} 	
+Explosion removes dirt, but takes no points from tank
+\item Weapon 29 \\
+\textbf{Scatter Shot} 	
+5 bullets spread upward where bullet lands
+\item Weapon 30 \\
+\textbf{Cruiser} 	
+Bullet 'cruises' along terrain for a few seconds before exploding
+
+\end{enumerate}
+
+If a player has played before so their will be a option to select his last used set of weapon.
+\paragraph{Terrain:}
+Terrain will be randomly generate for each game and will remain intact unless damaged by weapons.
+		
+\paragraph{Background:}
+There will be 3 backgrounds for the game:
+\begin{enumerate}
+\item \textbf{Day}
+\item \textbf{Night}
+\item \textbf{Rainy}
+\end{enumerate}
+Players can choose the background they want or the program will automatically select it based on the time of the day. For Rainy background, it will be selected in the months of July to October(With a 50 percent chance).
+
+\paragraph{Power:}
+Scroll indicator will be provided for adjustment in power. Power is basically the velocity with which weapon's fire will leave the weapon.
+\paragraph{Angle:}
+For adjustment in angle of projection either player can use mouse to point the angle or Adjust it through scroll indicator. There will be a marker which will give the hint about the angle.
+\\In online mode of the game opposite player can see how the projectile of another player will go.
+\paragraph{Battle Modes:}
+\begin{enumerate}
+\item \textbf{Offline Mode}
+\begin{enumerate}
+\item \textbf{Single Player:} In it opposition will be computer(An Intelligent Player). Computer will know your location atleast 70 percent of time correctly and attacks accordingly.
+\item \textbf{One on One:} In it one player will battle another player head on.
+\item \textbf{Team Battle:} In it there will teams of 2 players which will battle in same terrain.
+\end{enumerate}
+\item \textbf{Online Mode}
+\begin{enumerate}
+\item \textbf{Single Player:} In it opposition will be computer(An Intelligent Player). Computer will know your location atleast 70 percent of time correctly and attacks accordingly.
+\item \textbf{One on One: }In it one player will battle another player head on.
+\end{enumerate}
+\end{enumerate}
+
+\paragraph{Sound and Music:}
+
+		Every Weapon will have it's own characteristic sound which will be played when it is fired. Besides this game will have a general music playing on.\\
+			During Audio transmission, Music's volume will be slowed down or will be pause.
+		\\Players will have a option to disable sound and music.
+
+
+\paragraph{Chatting}
+\begin{enumerate}
+\item \textbf{Texting:}
+Simple text to text message communication with some abbrevations which will play some message audio that other player can hear.\\
+		Abbrevations are:\\
+			GL "Good Luck".\\
+			GG "Good Game".\\
+			NS "Nice Shot".\\
+			OP "Oops".\\
+			HH "Hehehe".
+			etc.\\
+\item \textbf{Audio and Video:}
+It will only work when the players agree to do so. Player will always have an option to mute/unmute audio. Both of them can work individually also.
+\end{enumerate}
+
+\paragraph{Authentication:}
+In online mode of the game one player will create the server and other will join the game. During server creation,host can specify a pin so that only that person could play this game who is supposed to play it.
+
+\paragraph{Tanks: }
+Tanks will be avaible to choose from various color.
+\\Movement:Maximum 4 movements will be allowed.
+
+\paragraph{Scoring:}
+Each weapon will have it's own set of damage points and purpose so based on that player's score will increase or decrease. Minimum score allowed will be 0.\\
+		During any session of game, game will record the history about the scores of the players along with their player id(which  they have to submit at the start of the game). When the game is going to be quit, player will be given an option to either save his weapon selection for further use or delete his record.		
+\section{Physics}		
+
+
+\paragraph{Basics-:} A projectile is an object that is given an initial velocity, and is acted on by gravity. The path the object follows is determined by these effects (ignoring air resistance). This path is the object's trajectory. The trajectory has horizontal (x) and vertical (y) components. Velocity is a vector (it has magnitude and direction), so the overall velocity of an object can be found with vector addition of the x and y components: $$v^{2} = {v_{x}}^{2} + {v_{y}}^{2}$$The units to express the horizontal and vertical distances are meters (m). The horizontal and vertical velocities are expressed in meters per second (m/s).\\
+\\
+Horizontal distance
+$$x = v_{x}*t$$
+Vertical distance
+$$y = v_{y}*t - \frac{g*t^{2}}{2}$$
+Horizontal velocity\\Horizontal velocity = Initial Horizontal velocity
+
+$$v_{x} = v_{xo}$$
+
+Vertical velocity
+
+$$v_{y} = v_{yo} - g*t$$
+
+$$x = Horizontal distance (m)$$
+
+$$y = Vertical distance (m)$$
+
+$$v = Velocity (combined components, m/s)$$
+
+$$v_{x} = Horizontal velocity (m/s)$$
+
+$$v_{y} = Vertical velocity (m/s)$$
+
+$$v_{xo} = initial horizontal velocity (m/s)$$
+
+$$v_{yo} = initial vertical velocity (m/s)$$
+
+$$t = time (s)$$
+
+$$g = acceleration due to gravity (9.80 m/s^{2})$$		
+		
+These equations give will give the coordinates of the weapon thrown in the plane of the game. Now we will also have co-ordinates of the terrain by comparing the two co-ordinates we will check if weapon has collided with the terrain or is still in air etc. All these calculations are very trivial using co-ordinate geometry formulaes		
+\section{Software Requirements}		
+As this is a web based application so only the server computer will need to have required software.
+\begin{enumerate}
+\item \textbf{Database:} Firebase, MongoDB  or MySQL,Preferably MySQL will be used.
+
+\item \textbf{Node Js and npm:} For creating server.
+
+\item \textbf{Web Browser:} Chrome or Firefox, to run the game.
+ 
+\end{enumerate}		
+		
+		
+\section{Technical Process}
+Following would be the Languages/tools would be used to develop this game
+\begin{enumerate}
+\item \textbf{HTML5}
+	It will provide basic structure to frontend of Pocket Tanks.
+\item \textbf{Styling} 
+\\	\textit{CSS3 and Bootstrap}
+\\
+	These will provide a better presentation for structure of HTML and graphics.
+\item \textbf{Graphics Rendering}
+\\	\textit{HTML Canvas or CreateJs(EaselJs and TweenJs)}
+\\	These will generate graphics and animination like Terrain, Tanks etc for the game .
+\item \textbf{Music and Sound}
+\\	\textit{CreateJs(SoundJs)}
+\\	For providing music and sound to the game we will use SoundJs. Each kind of event in the game will have a different sound which will be played when that event occurs. For Music in game, It will run through out the game unless the play mute it.
+	User will have the option to adjust volume of the music and sound.
+\item \textbf{Functionality}
+\\	\textit{Javascript AngularJs}
+\\	These will handle the working of the game. Movement of graphical component will be handled by these and all the frontend work like DOM handling etc will be covered.
+\item \textbf{Server-side Programming with TCP}
+\\	\textit{NodeJs and ExpressJs}
+\\	Backend will be handled by NodeJs and ExpressJs. It will create a server and handle all requests or control demanded by the client. Database will also be handled by this.
+\item \textbf{Database}
+\\	\textit{FireBase,MongoDB or MySQL}
+\\	MySQL will be used for data storage. As it is a Relational Database management system data will be stored in form of Tables.
+	\\Player Id will the primary key for database.
+\item \textbf{Communition between Server and Client}
+\\	\textit{socket.io}
+\\	For Real time communication between server and client socket.io will be used.
+	\\It will also handle texting in the game and transfer data between client and the server.
+\item \textbf{Video and Audio Transmission}
+\\
+	\textit{WebRTC and PeerJs} 
+	\\WebRTC is also used for Real time communication between client and server. It allows audio and video communication to work inside web pages by allowing direct peer to peer communication.
+	\\For Peer to Peer communication, PeerJS will be used which will create a PeerServer, on that server we can have a secure video and audio transmission. PeerJS simplifies WebRTC peer to peer data,video and audio calls.
+\end{enumerate}\end{document}
+
